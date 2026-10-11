@@ -125,3 +125,4 @@ footer.disc{font-size:.74rem;color:var(--muted);padding-block:18px 4px}
 .ev-add{display:flex;gap:8px;align-items:center;font-weight:600;font-size:.88rem;margin-top:4px}
 .ev-add input{width:18px;height:18px;accent-color:var(--accent)}
 .pill-extra{background:color-mix(in srgb,var(--accent) 16%,transparent)}
+.evento.vacio{background:var(--bg);border-style:dashed}

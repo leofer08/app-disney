@@ -70,8 +70,20 @@ const fmtShort = s => { const [y, m, d] = s.split("-"); return +d + " " + ["ene"
 function renderEventos() {
   const box = $("#eventos"); box.innerHTML = "";
   const list = activeEvents();
-  if (!tripRange()) { box.innerHTML = '<p class="note">Elegí fechas en el paso 1 para ver los eventos.</p>'; return; }
-  if (!list.length) { const p = document.createElement("p"); p.className = "note"; p.textContent = "No hay eventos especiales en tus fechas para los destinos elegidos. Los parques funcionan normal."; box.appendChild(p); return; }
+  const tit = $("#evTitulo");
+  if (!tripRange()) { tit.textContent = "Eventos en tus fechas"; box.innerHTML = '<p class="note">Elegí fechas en el paso 1 para ver los eventos.</p>'; return; }
+  if (!list.length) {
+    tit.textContent = "No hay eventos en tus fechas";
+    const card = document.createElement("div"); card.className = "evento vacio";
+    const t = document.createElement("b"); t.textContent = "Sin eventos especiales en esas fechas";
+    const p = document.createElement("p"); p.textContent = "Los parques funcionan normal, con sus shows y fuegos de todos los días.";
+    card.append(t, p);
+    const t2 = tripRange()[1];
+    const next = (D.eventos || []).filter(e => state.destinos.has(e.r) && e.from > t2).sort((x, y) => x.from.localeCompare(y.from))[0];
+    if (next) { const n = document.createElement("small"); n.textContent = "El próximo: " + next.name + " (" + D.resorts[next.r].short + "), desde el " + fmtShort(next.from) + " de " + next.from.slice(0, 4) + (next.aprox ? ", fecha aproximada" : "") + "."; card.appendChild(n); }
+    box.appendChild(card); return;
+  }
+  tit.textContent = "Eventos en tus fechas (" + list.length + ")";
   list.forEach(e => {
     const card = document.createElement(e.extra ? "label" : "div"); card.className = "evento" + (e.extra ? " sel" : "");
     const top = document.createElement("div"); top.className = "ev-top";
