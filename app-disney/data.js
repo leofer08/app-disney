@@ -167,6 +167,33 @@ window.DATA = {
       desc:"Era el plan completo: 3 comidas por noche en cualquier restaurante + 2 snacks. Disney no lo ofrece actualmente; si vuelve, te avisamos." }
   ],
 
+  // Pestaña "Antes de viajar"
+  apps: [
+    { r:["wdw","cruise"], name:"My Disney Experience", para:"Walt Disney World (Orlando)", url:"https://disneyworld.disney.go.com/",
+      uso:"Mapa del parque con tu ubicación, tiempos de espera, entradas, Lightning Lane, pedidos de comida y reservas de restaurantes." },
+    { r:["dlr"], name:"Disneyland App", para:"Disneyland Resort (California)", url:"https://disneyland.disney.go.com/",
+      uso:"Mapa, tiempos de espera, entradas, Lightning Lane y pedidos de comida." },
+    { r:["uor"], name:"Universal Orlando Resort", para:"Universal Orlando", url:"https://www.universalorlando.com/",
+      uso:"Mapa, tiempos de espera, Virtual Line y turnos de Volcano Bay." },
+    { r:["ush"], name:"Universal Studios Hollywood", para:"Universal Hollywood", url:"https://www.universalstudioshollywood.com/",
+      uso:"Mapa, tiempos de espera y horarios de shows." },
+    { r:["cruise"], name:"Disney Cruise Line Navigator", para:"Crucero Disney", url:"https://disneycruise.disney.go.com/",
+      uso:"Programa del barco, chat a bordo y reservas de actividades." }
+  ],
+  // dias: cuántos días antes de la salida conviene hacerlo (null = sin fecha fija)
+  checklist: [
+    { id:"pasaporte", dias:180, t:"Pasaporte vigente", d:"Revisá que no venza durante el viaje. Si hay que renovarlo, hacelo con tiempo." },
+    { id:"visa", dias:180, t:"Visa de Estados Unidos", d:"Los argentinos necesitan visa de turista (B1/B2). Los turnos de entrevista pueden demorar meses: revisá los plazos en el sitio de la embajada." },
+    { id:"restaurantes", dias:60, t:"Reservas de restaurantes Disney", d:"Disney abre las reservas 60 días antes (huéspedes de hoteles Disney pueden reservar para toda la estadía). Los más buscados se agotan el primer día." },
+    { id:"asistencia", dias:30, t:"Asistencia al viajero", d:"Contratala antes de salir. En Estados Unidos la atención médica es muy cara." },
+    { id:"appsbajadas", dias:14, t:"Bajar las apps oficiales y vincular entradas", d:"Creá la cuenta, cargá las entradas y la reserva de hotel en la app de cada parque." },
+    { id:"lightning", dias:7, t:"Lightning Lane / filas rápidas", d:"Con hotel Disney se reserva 7 días antes del check-in; sin hotel Disney, 3 días antes de cada día de parque." },
+    { id:"calzado", dias:14, t:"Calzado cómodo y ya usado", d:"Vas a caminar más de 10 km por día. Nada de zapatillas nuevas el primer día de parque." },
+    { id:"adaptador", dias:7, t:"Adaptador de enchufe", d:"En Estados Unidos los enchufes son de patas planas (tipo A/B): necesitás adaptador." },
+    { id:"datos", dias:3, t:"Internet en el celular", d:"Las apps de los parques necesitan datos todo el día: eSIM, roaming o chip local. Llevá batería externa." },
+    { id:"lluvia", dias:3, t:"Poncho y protector solar", d:"En Orlando llueve casi todas las tardes en verano. El poncho del parque sale caro." }
+  ],
+
   hoteles: ["Hotel Disney categoría Value","Hotel Disney categoría Moderate","Hotel Disney categoría Deluxe","Hotel de Universal","Hotel fuera de los parques","Casa / alquiler temporario","Ya tengo alojamiento"],
   extras: ["Vuelo desde Buenos Aires","Traslados aeropuerto","Asistencia al viajero","Lightning Lane (filas rápidas Disney)","Universal Express (filas rápidas Universal)","Plan de comidas","Alquiler de auto"],
   puertosCrucero: ["Port Canaveral (Orlando)","Fort Lauderdale","Miami","Galveston","Me da igual"]

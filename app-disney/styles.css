@@ -135,3 +135,9 @@ section.panel > label.f{flex:none}
 .planopt small{color:var(--muted);font-size:.8rem}
 .planopt.off{opacity:.55;cursor:not-allowed}
 .note.warn{color:var(--accent);font-weight:600}
+.ckitem div{display:flex;flex-direction:column;gap:3px;min-width:0}
+.ckitem small{color:var(--muted);font-size:.82rem;font-weight:400}
+.ckitem .tag{align-self:flex-start;font:600 .72rem var(--f-body);padding:2px 8px;border-radius:999px;background:var(--soft)}
+.ckitem .tag.warn{background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent)}
+.ckitem.done b{text-decoration:line-through;color:var(--muted)}
+.linkout{color:var(--sky);font-weight:700;font-size:.88rem;text-decoration:none}

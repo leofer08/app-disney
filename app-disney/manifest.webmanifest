@@ -1,7 +1,7 @@
 {
   "name": "Viajes a Disney",
   "short_name": "Disney Trip",
-  "description": "Armá tu viaje a Disney, mirá cuánto vas a caminar y ubicate en los parques.",
+  "description": "Armá y cotizá tu viaje a Disney y Universal, mirá cuánto vas a caminar y preparate antes de salir.",
   "lang": "es",
   "start_url": "./",
   "scope": "./",

@@ -1,7 +1,7 @@
 // Cambiá la versión cada vez que subas cambios, así los celulares bajan lo nuevo.
-const VERSION = "v7";
+const VERSION = "v8";
 const CACHE = "app-disney-" + VERSION;
-const SHELL = ["./", "index.html", "styles.css", "app.js", "data.js", "config.js", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "vendor/leaflet/leaflet.js", "vendor/leaflet/leaflet.css"];
+const SHELL = ["./", "index.html", "styles.css", "app.js", "data.js", "config.js", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -12,8 +12,6 @@ self.addEventListener("activate", e => {
 self.addEventListener("fetch", e => {
   const url = new URL(e.request.url);
   if (e.request.method !== "GET") return;
-  // Mapas: siempre de internet (no se guardan)
-  if (url.hostname.endsWith("tile.openstreetmap.org")) return;
   // Firebase / Google APIs: siempre de internet
   if (url.hostname.endsWith("googleapis.com") || url.hostname.endsWith("firebaseapp.com")) return;
   // Archivos propios: primero internet, si no hay señal usa la copia guardada

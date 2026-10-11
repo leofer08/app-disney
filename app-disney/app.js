@@ -360,82 +360,51 @@ function renderParks() {
   });
 }
 
-/* ---------- Mapa ---------- */
-let map = null, mapResort = "wdw", meMarker = null, accCircle = null, trailLine = null, watchId = null, last = null, follow = true;
-const parkLayers = {};
-const today = () => new Date().toISOString().slice(0, 10);
-let walk = store.get("walk", { date: today(), km: 0 });
-if (walk.date !== today()) walk = { date: today(), km: 0 };
-function hav(a, b) { const R = 6371, r = x => x * Math.PI / 180; const dLa = r(b.lat - a.lat), dLo = r(b.lng - a.lng); const h = Math.sin(dLa / 2) ** 2 + Math.cos(r(a.lat)) * Math.cos(r(b.lat)) * Math.sin(dLo / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); }
-function nearest(pos) { let best = null; D.parks.filter(p => p.lat).forEach(p => { const d = hav(pos, p); if (!best || d < best.d) best = { p, d }; }); return best; }
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-
-Object.entries(D.resorts).filter(([, r]) => r.center).map(([k, r]) => [k, r.name]).forEach(([k, v]) => {
-  const b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.textContent = v; b.dataset.k = k;
-  b.onclick = () => { mapResort = k; follow = false; showResort(); }; $("#mapResort").appendChild(b);
-});
-function initMap() {
-  if (map || !window.L) { if (!window.L) $("#geoStatus").textContent = "No se pudo cargar el mapa. Revisá la conexión."; return; }
-  map = L.map("map", { zoomControl: true, attributionControl: true });
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OpenStreetMap" }).addTo(map);
-  D.parks.filter(p => p.lat).forEach(p => {
-    const color = p.water ? css("--ok") : p.shop ? css("--gold") : css("--sky");
-    const c = L.circle([p.lat, p.lng], { radius: p.rad, color, weight: 2, fillOpacity: .12, dashArray: p.water || p.shop ? "6 5" : null }).addTo(map);
-    c.bindTooltip(p.name, { permanent: true, direction: "center", className: "" });
-    c.bindPopup("<b>" + p.name + "</b><br>" + fmt(p.km[0]) + "–" + fmt(p.km[1]) + " km en un día completo");
-    parkLayers[p.id] = c;
+/* ---------- Antes de viajar ---------- */
+let checks = store.get("checklist", {});
+function renderGuia() {
+  const box = $("#apps"); box.innerHTML = "";
+  const sel = D.apps.filter(a => a.r.some(r => state.destinos.has(r)));
+  (sel.length ? sel : D.apps).forEach(a => {
+    const card = document.createElement("div"); card.className = "evento";
+    const top = document.createElement("div"); top.className = "ev-top";
+    const t = document.createElement("b"); t.textContent = a.name;
+    const p = document.createElement("span"); p.className = "pill"; p.textContent = a.para;
+    top.append(t, p);
+    const d = document.createElement("p"); d.textContent = a.uso;
+    const l = document.createElement("a"); l.href = a.url; l.target = "_blank"; l.rel = "noopener"; l.className = "linkout"; l.textContent = "Sitio oficial →";
+    card.append(top, d, l); box.appendChild(card);
   });
-  map.on("dragstart", () => { follow = false; });
-  trailLine = L.polyline([], { color: css("--accent"), weight: 4, opacity: .7 }).addTo(map);
-  showResort();
+  const ida = $("#fIda").value ? new Date($("#fIda").value + "T12:00") : null;
+  const falta = ida ? Math.round((ida - new Date()) / 864e5) : null;
+  $("#ckNota").textContent = falta != null && falta >= 0 ? "Faltan " + falta + " días para tu salida (" + fmtD($("#fIda").value) + "). Te marcamos qué conviene hacer primero." : "Cargá la fecha de salida en Armar viaje y te decimos cuándo hacer cada cosa.";
+  const ck = $("#checklist"); ck.innerHTML = "";
+  let hechos = 0;
+  D.checklist.forEach(it => {
+    const done = !!checks[it.id]; if (done) hechos++;
+    const l = document.createElement("label"); l.className = "check ckitem" + (done ? " done" : ""); l.htmlFor = "ck-" + it.id;
+    const c = document.createElement("input"); c.type = "checkbox"; c.id = "ck-" + it.id; c.checked = done;
+    c.onchange = () => { checks[it.id] = c.checked; store.set("checklist", checks); renderGuia(); };
+    const tx = document.createElement("div"); const b = document.createElement("b"); b.textContent = it.t;
+    const s2 = document.createElement("small"); s2.textContent = it.d; tx.append(b, s2);
+    if (ida && it.dias && !done) {
+      const lim = new Date(ida); lim.setDate(lim.getDate() - it.dias);
+      const dias = Math.round((lim - new Date()) / 864e5);
+      const tag = document.createElement("span"); tag.className = "tag" + (dias < 0 ? " warn" : "");
+      tag.textContent = dias < 0 ? "Ya deberías tenerlo" : dias === 0 ? "Hacelo hoy" : "Antes del " + fmtD(iso(lim));
+      tx.appendChild(tag);
+    }
+    l.append(c, tx); ck.appendChild(l);
+  });
+  $("#ckProg").textContent = hechos + " de " + D.checklist.length + " listos";
 }
-function showResort() {
-  document.querySelectorAll("#mapResort .chip").forEach(b => b.setAttribute("aria-pressed", b.dataset.k === mapResort));
-  if (map) { const r = D.resorts[mapResort]; map.setView(r.center, r.zoom); }
-}
-function updateStats(pos) {
-  const n = pos ? nearest(pos) : null;
-  $("#mNear").textContent = n ? n.p.name.replace("Disneyland Park", "Disneyland").split(" ").slice(0, 2).join(" ") : "—";
-  $("#mDist").textContent = n ? (n.d < 1 ? fmt(n.d * 1000) + " m" : fmt(n.d, 1) + " km") : "—";
-  $("#mHoy").textContent = fmt(walk.km, 1) + " km";
-  Object.entries(parkLayers).forEach(([id, c]) => c.setStyle({ fillOpacity: n && n.p.id === id && n.d < 1.2 ? .3 : .12 }));
-  return n;
-}
-function onPos(p) {
-  const pos = { lat: p.coords.latitude, lng: p.coords.longitude }, acc = p.coords.accuracy;
-  if (last && acc < 35) {
-    const d = hav(last, pos);
-    if (d > 0.008 && d < 0.5) { walk.km += d; walk.date = today(); store.set("walk", walk); last = pos; trailLine.addLatLng([pos.lat, pos.lng]); }
-  } else if (!last && acc < 60) { last = pos; trailLine.addLatLng([pos.lat, pos.lng]); }
-  if (!meMarker) {
-    meMarker = L.marker([pos.lat, pos.lng], { icon: L.divIcon({ className: "", html: '<div class="me-marker"></div>', iconSize: [18, 18], iconAnchor: [9, 9] }), zIndexOffset: 1000 }).addTo(map);
-    accCircle = L.circle([pos.lat, pos.lng], { radius: acc, color: css("--accent"), weight: 1, fillOpacity: .08 }).addTo(map);
-  } else { meMarker.setLatLng([pos.lat, pos.lng]); accCircle.setLatLng([pos.lat, pos.lng]).setRadius(acc); }
-  const n = updateStats(pos), st = $("#geoStatus"); st.className = "status";
-  if (n && n.d < 1.2) { st.textContent = "Estás en " + n.p.name + ". Precisión ±" + Math.round(acc) + " m."; if (follow) map.setView([pos.lat, pos.lng], Math.max(map.getZoom(), 16)); }
-  else st.textContent = "Estás a " + fmt(n.d, 0) + " km del parque más cercano (" + n.p.name + "). Cuando llegues, el mapa te sigue solo.";
-}
-$("#btnGps").onclick = () => {
-  const st = $("#geoStatus");
-  if (!navigator.geolocation) { st.className = "status warn"; st.textContent = "Este navegador no da acceso al GPS."; return; }
-  if (watchId !== null) { navigator.geolocation.clearWatch(watchId); watchId = null; $("#btnGps").textContent = "Usar mi GPS"; st.textContent = "GPS pausado."; return; }
-  st.className = "status"; st.textContent = "Buscando tu ubicación… aceptá el permiso si te lo pide."; follow = true;
-  watchId = navigator.geolocation.watchPosition(onPos, err => {
-    st.className = "status warn";
-    st.textContent = err.code === 1 ? "No diste permiso de ubicación. Activalo en la configuración del navegador para este sitio." : "No pudimos obtener tu ubicación. Probá al aire libre.";
-    navigator.geolocation.clearWatch(watchId); watchId = null; $("#btnGps").textContent = "Usar mi GPS";
-  }, { enableHighAccuracy: true, maximumAge: 5000, timeout: 20000 });
-  $("#btnGps").textContent = "Pausar GPS";
-  if ("wakeLock" in navigator) navigator.wakeLock.request("screen").catch(() => {});
-};
-$("#btnReset").onclick = () => { walk = { date: today(), km: 0 }; store.set("walk", walk); last = null; if (trailLine) trailLine.setLatLngs([]); updateStats(null); };
 
 /* ---------- Tabs ---------- */
 function showTab(tab) {
   document.querySelectorAll("nav.tabs button").forEach(x => x.setAttribute("aria-selected", x.dataset.tab === tab));
-  ["viaje", "parques", "mapa"].forEach(t => $("#tab-" + t).hidden = t !== tab);
+  ["viaje", "parques", "guia"].forEach(t => $("#tab-" + t).hidden = t !== tab);
   window.scrollTo({ top: 0 });
-  if (tab === "mapa") { initMap(); setTimeout(() => map && map.invalidateSize(), 50); }
+  if (tab === "guia") renderGuia();
   if (location.hash !== "#" + tab) history.replaceState(null, "", "#" + tab);
 }
 document.querySelectorAll("nav.tabs button").forEach(b => b.onclick = () => showTab(b.dataset.tab));
@@ -452,7 +421,7 @@ $("#btnInstall").onclick = async () => {
 $("#iosClose").onclick = () => $("#iosSheet").hidden = true;
 if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
 
-render(); renderParks(); updateStats(null);
-const fromHash = () => { const h = location.hash.slice(1); if (["viaje", "parques", "mapa"].includes(h)) showTab(h); };
+render(); renderParks(); renderGuia();
+const fromHash = () => { const h = location.hash.slice(1); if (["viaje", "parques", "guia"].includes(h)) showTab(h); };
 fromHash(); window.addEventListener("hashchange", fromHash);
 })();

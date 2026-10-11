@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Viajes a Disney y Universal</title>
-<meta name="description" content="Armá tu viaje a Disney, mirá cuánto vas a caminar en cada parque y ubicate con el GPS.">
+<meta name="description" content="Armá tu viaje a Disney y Universal, mirá cuánto vas a caminar en cada parque y preparate antes de salir.">
 <meta name="theme-color" content="#13234A">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png">
@@ -13,8 +13,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
-<link rel="stylesheet" href="vendor/leaflet/leaflet.css">
-<link rel="stylesheet" href="styles.css?v=7">
+<link rel="stylesheet" href="styles.css?v=8">
 </head>
 <body>
 <div class="app">
@@ -148,32 +147,25 @@
     <div class="stack" id="parkList" style="gap:10px"></div>
   </main>
 
-  <!-- ============ MAPA ============ -->
-  <main id="tab-mapa" class="stack" hidden>
+  <!-- ============ ANTES DE VIAJAR ============ -->
+  <main id="tab-guia" class="stack" hidden>
     <div class="stack" style="gap:6px">
-      <h1>¿Dónde estoy?</h1>
-      <p class="hero-sub">Tu ubicación en el mapa, el parque más cercano y los kilómetros que llevás caminados hoy.</p>
+      <h1>Antes de viajar</h1>
+      <p class="hero-sub">Qué apps bajar para usar adentro de los parques y qué tenés que tener listo antes de salir.</p>
     </div>
-    <div class="chips" id="mapResort"></div>
-    <div class="mapbox">
-      <div id="map" role="region" aria-label="Mapa del complejo"></div>
-      <div class="mapinfo">
-        <div class="status" id="geoStatus">Tocá “Usar mi GPS” para ubicarte.</div>
-        <div class="stats">
-          <div class="stat"><div class="k">Cerca de</div><div class="v" id="mNear">—</div></div>
-          <div class="stat"><div class="k">Distancia</div><div class="v" id="mDist">—</div></div>
-          <div class="stat"><div class="k">Hoy</div><div class="v" id="mHoy">0,0 km</div></div>
-        </div>
-        <div class="row">
-          <button class="btn primary wide" id="btnGps" type="button">Usar mi GPS</button>
-          <button class="btn ghost wide" id="btnReset" type="button">Reiniciar km de hoy</button>
-        </div>
-        <p class="note">Los km se cuentan mientras la app está abierta. Para contar el día entero, dejala abierta en el bolsillo o usá el podómetro del celular.</p>
-      </div>
-    </div>
+    <section class="panel">
+      <div class="panel-head"><h2>En el parque, usá la app oficial</h2></div>
+      <p class="note">Tienen el mapa con tu ubicación, los tiempos de espera en vivo y tus entradas. Son gratis. Te mostramos las de los destinos que elegiste.</p>
+      <div class="stack" id="apps" style="gap:8px"></div>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><h2>Checklist del viaje</h2><span class="pill" id="ckProg"></span></div>
+      <p class="note" id="ckNota"></p>
+      <div class="stack" id="checklist" style="gap:8px"></div>
+    </section>
   </main>
 
-  <footer class="disc">App de una agencia de viajes. No es una app oficial de Disney ni de Universal. Precios de entradas: rangos públicos en USD antes de impuestos, sujetos a cambio; la cotización final la confirma el agente. Mapa © OpenStreetMap.</footer>
+  <footer class="disc">App de una agencia de viajes. No es una app oficial de Disney ni de Universal. Precios de entradas: rangos públicos en USD antes de impuestos, sujetos a cambio; la cotización final la confirma el agente.</footer>
 </div>
 
 <div class="sheet" id="iosSheet" hidden>
@@ -186,14 +178,13 @@
   <div class="in">
     <button role="tab" aria-selected="true" data-tab="viaje"><svg viewBox="0 0 24 24"><path d="M3 9h18v4a2 2 0 0 0 0 4v2H3v-2a2 2 0 0 0 0-4z"/><path d="M14 9v10" stroke-dasharray="2 2"/></svg>Armar viaje</button>
     <button role="tab" aria-selected="false" data-tab="parques"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Parques</button>
-    <button role="tab" aria-selected="false" data-tab="mapa"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Mapa</button>
+    <button role="tab" aria-selected="false" data-tab="guia"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>Antes de viajar</button>
   </div>
 </nav>
 
-<script src="vendor/leaflet/leaflet.js"></script>
-<script src="config.js?v=7"></script>
-<script src="data.js?v=7"></script>
-<script src="app.js?v=7"></script>
-<script type="module" src="pedidos.js?v=7"></script>
+<script src="config.js?v=8"></script>
+<script src="data.js?v=8"></script>
+<script src="app.js?v=8"></script>
+<script type="module" src="pedidos.js?v=8"></script>
 </body>
 </html>
