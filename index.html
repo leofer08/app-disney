@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Viajes a Disney y Universal</title>
+<meta name="description" content="Armá tu viaje a Disney y Universal, mirá cuánto vas a caminar en cada parque y preparate antes de salir.">
+<meta name="theme-color" content="#13234A">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="styles.css?v=8">
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <span class="eyebrow" id="agNombre">Agencia</span>
+    <button class="install" id="btnInstall" type="button" hidden>Instalar app</button>
+  </header>
+
+  <!-- ============ VIAJE ============ -->
+  <main id="tab-viaje" class="stack">
+    <div class="stack" style="gap:6px">
+      <h1>Armá tu viaje a Disney y Universal y te lo cotizamos</h1>
+      <p class="hero-sub">Elegí destino, fechas y parques. Te mostramos cuánto vas a caminar y una referencia de entradas; el precio final lo arma tu agente.</p>
+    </div>
+
+
+    <section class="panel">
+      <div class="panel-head"><h2>Fechas y viajeros</h2><span class="step">1 / 6</span></div>
+      <div class="row">
+        <label class="f" for="fIda">Salida<input type="date" id="fIda"></label>
+        <label class="f" for="fVuelta">Regreso<input type="date" id="fVuelta"></label>
+      </div>
+      <div>
+        <div class="counter"><div class="lbl"><b>Adultos</b><small>10 años o más (tarifa adulto en Disney)</small></div><div class="stepper" data-k="adultos"></div></div>
+        <div class="counter"><div class="lbl"><b>Niños</b><small>3 a 9 años</small></div><div class="stepper" data-k="ninos"></div></div>
+        <div class="counter"><div class="lbl"><b>Bebés</b><small>0 a 2 años · no pagan entrada</small></div><div class="stepper" data-k="bebes"></div></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Destino</h2><span class="step">2 / 6</span></div>
+      <div class="chips" id="destinos"></div>
+      <p class="note">Podés combinar: por ejemplo Disney + Universal en Orlando, o sumar un crucero. Te marcamos cuántos eventos especiales hay en tus fechas.</p>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2 id="evTitulo">Eventos en tus fechas</h2><span class="step">3 / 6</span></div>
+      <p class="note">Fiestas, festivales y temporadas especiales que coinciden con tu viaje. Los que tienen entrada aparte los podés sumar al pedido.</p>
+      <div class="stack" id="eventos" style="gap:10px"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Días por parque y compras</h2><span class="step">4 / 6</span></div>
+      <p class="note">Con esto calculamos entradas, cuánto vas a caminar y cuántas noches de hotel necesitás.</p>
+      <div id="parkDays"></div>
+      <div class="counter"><div class="lbl"><b>Días de compras</b><small>Outlets y shoppings · 6–10 km por día</small></div><div class="stepper" id="comprasStep"></div></div>
+      <div id="cruiseBox" hidden class="row">
+        <label class="f" for="crNoches">Noches de crucero
+          <select id="crNoches"><option>3</option><option selected>4</option><option>5</option><option>7</option></select></label>
+        <label class="f" for="crPuerto">Sale desde<select id="crPuerto"></select></label>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Hotel y extras</h2><span class="step">5 / 6</span></div>
+      <label class="f" for="hotel">Alojamiento<select id="hotel"></select></label>
+      <label class="f" for="ticketTipo">Tipo de entrada
+        <select id="ticketTipo">
+          <option value="base">Un parque por día</option>
+          <option value="hopper">Park Hopper (varios parques el mismo día)</option>
+        </select></label>
+      <div class="checks" id="extras"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Tus datos</h2><span class="step">6 / 6</span></div>
+      <div class="row">
+        <label class="f" for="nombre">Nombre<input id="nombre" placeholder="Ej: Familia Pérez" autocomplete="name"></label>
+        <label class="f" for="wsp">WhatsApp<input id="wsp" inputmode="tel" placeholder="11 5555-0000" autocomplete="tel"></label>
+      </div>
+      <label class="f" for="coment">Comentarios<textarea id="coment" rows="2" placeholder="Ej: primera vez en Disney, viajamos por un cumpleaños…"></textarea></label>
+    </section>
+
+    <section class="ticket" aria-live="polite">
+      <div class="row" style="justify-content:space-between">
+        <div><div class="eyebrow">Tu viaje</div><div id="rTitulo" style="font-family:var(--f-display);font-weight:700;font-size:1.15rem"></div></div>
+        <div class="mono" id="rCodigo" style="font-size:.8rem;opacity:.75"></div>
+      </div>
+      <div class="kv">
+        <div><div class="eyebrow">Fechas</div><div class="v" id="rFechas"></div></div>
+        <div><div class="eyebrow">Viajeros</div><div class="v" id="rPax"></div></div>
+      </div>
+      <div class="perf"></div>
+      <div>
+        <div class="eyebrow">Vas a caminar (estimado)</div>
+        <div class="big" id="rKm"></div>
+        <div class="mono" id="rPasos" style="opacity:.8;font-size:.85rem;margin-top:4px"></div>
+      </div>
+      <div class="walkbar" aria-hidden="true"><i id="rBar"></i></div>
+      <p class="note" id="rKmNota"></p>
+      <div class="perf"></div>
+      <div>
+        <div class="eyebrow">Noches de hotel</div>
+        <div class="big" id="rNoches"></div>
+        <p class="note" id="rNochesNota" style="margin-top:4px"></p>
+        <button class="btn ghost" id="btnAjustar" type="button" hidden style="margin-top:10px;padding:9px 14px;font-size:.9rem">Ajustar regreso</button>
+      </div>
+      <div id="rFlags" class="stack" style="gap:8px"></div>
+      <div class="perf"></div>
+      <div>
+        <div class="eyebrow" id="rTicketsLbl">Entradas · referencia precios públicos</div>
+        <div class="big" id="rTickets"></div>
+        <p class="note" id="rTicketsNota" style="margin-top:4px"></p>
+      </div>
+      <div class="row">
+        <a class="btn primary wide" id="btnWsp" target="_blank" rel="noopener" href="#">Enviar al agente por WhatsApp</a>
+        <button class="btn ghost wide" id="btnCopy" type="button">Copiar pedido</button>
+      </div>
+      <div class="toast" id="toast" role="status"></div>
+    </section>
+
+    <details class="park" id="msgBox">
+      <summary><span class="t"><b>Ver el mensaje que recibe el agente</b><small>Se arma solo con lo que cargaste</small></span><span class="pill">Vista previa</span></summary>
+      <div class="park-body"><pre class="msg" id="msg"></pre></div>
+    </details>
+  </main>
+
+  <!-- ============ PARQUES ============ -->
+  <main id="tab-parques" class="stack" hidden>
+    <div class="stack" style="gap:6px">
+      <h1>Parques: cuánto se camina</h1>
+      <p class="hero-sub">Kilómetros en un día completo, de apertura a cierre, según mediciones de visitantes con GPS y podómetro. Universal: estimaciones nuestras.</p>
+    </div>
+    <section class="panel">
+      <div class="panel-head"><h2>Km por día completo</h2><span class="pill" id="pasosPorKm"></span></div>
+      <div class="chips" id="resortFilter"></div>
+      <div class="chart" id="chart"></div>
+      <div class="axis"><span></span><div><span>0</span><span>5</span><span>10</span><span>15</span><span>20 km</span></div></div>
+      <div class="legend"><span><i></i>Medición publicada</span><span><i class="est"></i>Estimación nuestra</span></div>
+    </section>
+    <div class="stack" id="parkList" style="gap:10px"></div>
+  </main>
+
+  <!-- ============ ANTES DE VIAJAR ============ -->
+  <main id="tab-guia" class="stack" hidden>
+    <div class="stack" style="gap:6px">
+      <h1>Antes de viajar</h1>
+      <p class="hero-sub">Qué apps bajar para usar adentro de los parques y qué tenés que tener listo antes de salir.</p>
+    </div>
+    <section class="panel">
+      <div class="panel-head"><h2>En el parque, usá la app oficial</h2></div>
+      <p class="note">Tienen el mapa con tu ubicación, los tiempos de espera en vivo y tus entradas. Son gratis. Te mostramos las de los destinos que elegiste.</p>
+      <div class="stack" id="apps" style="gap:8px"></div>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><h2>Checklist del viaje</h2><span class="pill" id="ckProg"></span></div>
+      <p class="note" id="ckNota"></p>
+      <div class="stack" id="checklist" style="gap:8px"></div>
+    </section>
+  </main>
+
+  <footer class="disc">App de una agencia de viajes. No es una app oficial de Disney ni de Universal. Precios de entradas: rangos públicos en USD antes de impuestos, sujetos a cambio; la cotización final la confirma el agente.</footer>
+</div>
+
+<div class="sheet" id="iosSheet" hidden>
+  <h2>Instalá la app en tu iPhone</h2>
+  <p>Tocá el botón <b>Compartir</b> de Safari (el cuadrado con la flecha) y elegí <b>Agregar a inicio</b>.</p>
+  <button class="btn primary" id="iosClose" type="button">Entendido</button>
+</div>
+
+<nav class="tabs" role="tablist" aria-label="Secciones">
+  <div class="in">
+    <button role="tab" aria-selected="true" data-tab="viaje"><svg viewBox="0 0 24 24"><path d="M3 9h18v4a2 2 0 0 0 0 4v2H3v-2a2 2 0 0 0 0-4z"/><path d="M14 9v10" stroke-dasharray="2 2"/></svg>Armar viaje</button>
+    <button role="tab" aria-selected="false" data-tab="parques"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Parques</button>
+    <button role="tab" aria-selected="false" data-tab="guia"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>Antes de viajar</button>
+  </div>
+</nav>
+
+<script src="config.js?v=8"></script>
+<script src="data.js?v=8"></script>
+<script src="app.js?v=8"></script>
+<script type="module" src="pedidos.js?v=8"></script>
+</body>
+</html>
