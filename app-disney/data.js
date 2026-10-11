@@ -8,8 +8,10 @@ window.DATA = {
   pasosPorKm: 1320, // ~2.200 pasos por milla
 
   resorts: {
-    wdw:    { name: "Walt Disney World", short: "Orlando",    airport: "MCO", center: [28.3852, -81.5639], zoom: 13 },
-    dlr:    { name: "Disneyland Resort", short: "California", airport: "LAX", center: [33.8090, -117.9200], zoom: 16 },
+    wdw:    { name: "Walt Disney World", short: "Disney Orlando", airport: "MCO", center: [28.3852, -81.5639], zoom: 13 },
+    uor:    { name: "Universal Orlando", short: "Universal",  airport: "MCO", center: [28.4560, -81.4580], zoom: 13 },
+    dlr:    { name: "Disneyland Resort", short: "Disneyland", airport: "LAX", center: [33.8090, -117.9200], zoom: 16 },
+    ush:    { name: "Universal Hollywood", short: "Universal LA", airport: "LAX", center: [34.1375, -118.3550], zoom: 16 },
     cruise: { name: "Crucero Disney",    short: "Crucero",    airport: "MCO" }
   },
 
@@ -56,6 +58,30 @@ window.DATA = {
       lat:33.8090, lng:-117.9236, rad:150, shop:true,
       walk:"Paseo peatonal entre los parques y los hoteles.",
       tips:["Entrada libre, abierto hasta tarde."]},
+    { id:"usf", r:"uor", name:"Universal Studios Florida", kind:"Parque temático", km:[9.7,14.5], est:true, t:[119,0],
+      lat:28.4752, lng:-81.4685, rad:450,
+      walk:"Recorrido en anillo alrededor de una laguna; conectado a Islands of Adventure por CityWalk y el Hogwarts Express.",
+      tips:["El Hogwarts Express une los dos parques de Harry Potter, pero necesitás entrada park-to-park.","Las atracciones grandes arman fila desde la apertura: arrancá por ahí.","Universal Express te saltea la fila común en casi todo (se paga aparte)."]},
+    { id:"ioa", r:"uor", name:"Islands of Adventure", kind:"Parque temático", km:[9.7,14.5], est:true, t:[119,0],
+      lat:28.4710, lng:-81.4718, rad:450,
+      walk:"Circuito alrededor de un lago, con islas temáticas una detrás de la otra: si no volvés sobre tus pasos, se camina menos.",
+      tips:["Hay muchas atracciones con agua: llevá ropa de recambio o poncho.","Las montañas rusas tienen altura mínima: revisá antes si van chicos.","Combina con Universal Studios en el mismo día con entrada park-to-park."]},
+    { id:"epu", r:"uor", name:"Epic Universe", kind:"Parque temático", km:[11.3,16.1], est:true, t:[139,0],
+      lat:28.4365, lng:-81.4470, rad:550,
+      walk:"Parque más nuevo (2025): una plaza central con portales a cada mundo; las idas y vueltas al centro suman kilómetros.",
+      tips:["Queda separado de los otros parques: se llega en bus o auto, no caminando.","Es el más buscado: comprá la entrada con fecha fija y llegá a la apertura.","Ideal dedicarle un día entero."]},
+    { id:"vb", r:"uor", name:"Volcano Bay", kind:"Parque acuático", km:[4.8,8.0], est:true, t:[80,0],
+      lat:28.4623, lng:-81.4708, rad:250, water:true,
+      walk:"Parque acuático con sistema de turnos virtuales: esperás tirado en la playa en vez de hacer fila.",
+      tips:["Te dan una pulsera para reservar turno en los toboganes.","Llegá temprano: se llena y a veces cierra el ingreso."]},
+    { id:"cw", r:"uor", name:"Universal CityWalk", kind:"Compras y comida", km:[2.4,4.8], est:true, t:[0,0],
+      lat:28.4737, lng:-81.4676, rad:150, shop:true,
+      walk:"Paseo de restaurantes entre los dos parques originales, entrada libre.",
+      tips:["Buen lugar para cenar después del parque.","El estacionamiento se paga."]},
+    { id:"ush", r:"ush", name:"Universal Studios Hollywood", kind:"Parque temático", km:[8.0,12.9], est:true, t:[109,159],
+      lat:34.1381, lng:-118.3534, rad:400,
+      walk:"Está en una colina, en dos niveles unidos por escaleras mecánicas larguísimas: menos km que Orlando pero más subida.",
+      tips:["El Studio Tour en tranvía por los estudios reales es lo imperdible.","Se recorre en un día; combina bien con Disneyland, a unos 50 km.","Express te saltea las filas (se paga aparte)."]},
     { id:"cr", r:"cruise", name:"Día en el barco", kind:"Crucero · día de navegación", km:[4.8,8.0], est:true, t:[0,0], perNight:true,
       walk:"Se camina menos que en un parque, pero suma: cubiertas, escaleras y shows.",
       tips:["Cabinas y tarifa dependen del barco y el itinerario: lo cotiza el agente.","Combina muy bien con unos días de parques en Orlando antes de embarcar."]}
@@ -64,9 +90,17 @@ window.DATA = {
   // Entradas Walt Disney World de varios días: total por persona [mín, máx]
   wdwMulti: {1:[119,199],2:[256,386],3:[384,567],4:[492,724],5:[535,816],6:[564,871],7:[581,907],8:[624,940],9:[639,948],10:[660,970]},
   lightningLane: [18,39], // Multi Pass por persona y día
+
+  // Universal Orlando: precio "desde" por persona y por día según cantidad de días (Universal publica solo mínimos)
+  // 1 día: 119 (Epic: 139). 2 días: 117/día (176/día si incluye Epic). 3: 118. 4: 113. 5+: 93
+  uorDesde: {1:119, 2:117, 3:118, 4:113, 5:93},
+  uorDesdeConEpic2: 176,
+  uorParkToPark: {1:174, 2:147, 3:138, 4:113, 5:93},
+  universalExpress: [120,320], // por persona y día
+  ushDia: [109,159],
   impuestoFlorida: 6.5,
 
-  hoteles: ["Hotel Disney categoría Value","Hotel Disney categoría Moderate","Hotel Disney categoría Deluxe","Hotel fuera de Disney","Casa / alquiler temporario","Ya tengo alojamiento"],
-  extras: ["Vuelo desde Buenos Aires","Traslados aeropuerto","Asistencia al viajero","Lightning Lane (filas rápidas)","Plan de comidas","Alquiler de auto"],
+  hoteles: ["Hotel Disney categoría Value","Hotel Disney categoría Moderate","Hotel Disney categoría Deluxe","Hotel de Universal","Hotel fuera de los parques","Casa / alquiler temporario","Ya tengo alojamiento"],
+  extras: ["Vuelo desde Buenos Aires","Traslados aeropuerto","Asistencia al viajero","Lightning Lane (filas rápidas Disney)","Universal Express (filas rápidas Universal)","Plan de comidas","Alquiler de auto"],
   puertosCrucero: ["Port Canaveral (Orlando)","Fort Lauderdale","Miami","Galveston","Me da igual"]
 };

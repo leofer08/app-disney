@@ -10,7 +10,7 @@ const store = {
 
 /* ---------- Agencia ---------- */
 $("#agNombre").textContent = A.nombre;
-document.title = A.nombre + " · Viajes a Disney";
+document.title = A.nombre + " · Disney y Universal";
 
 /* ---------- Estado ---------- */
 const iso = d => d.toISOString().slice(0, 10);
@@ -19,7 +19,7 @@ const saved = store.get("viaje", null);
 const state = {
   destinos: new Set(saved?.destinos || ["wdw"]),
   pax: saved?.pax || { adultos: 2, ninos: 0, bebes: 0 },
-  days: Object.assign({ mk: 1, ep: 1, hs: 1, ak: 1, tl: 0, bb: 0, ds: 0, dl: 1, ca: 1, dt: 0 }, saved?.days || {}),
+  days: Object.assign({ mk: 1, ep: 1, hs: 1, ak: 1, tl: 0, bb: 0, ds: 0, dl: 1, ca: 1, dt: 0, usf: 1, ioa: 1, epu: 1, vb: 0, cw: 0, ush: 1 }, saved?.days || {}),
   extras: new Set(saved?.extras || ["Vuelo desde Buenos Aires", "Traslados aeropuerto", "Asistencia al viajero"])
 };
 const fields = ["fIda", "fVuelta", "hotel", "ticketTipo", "nombre", "wsp", "coment", "crNoches", "crPuerto"];
@@ -86,7 +86,7 @@ function tickets() {
     }
     const wp = (state.days.tl || 0) + (state.days.bb || 0);
     if (wp) { const a = (74 * state.pax.adultos + 68 * state.pax.ninos) * wp; lo += a; hi += a; notes.push("Parques acuáticos: " + wp + " día" + (wp > 1 ? "s" : "") + "."); }
-    if (state.extras.has("Lightning Lane (filas rápidas)") && td) {
+    if (state.extras.has("Lightning Lane (filas rápidas Disney)") && td) {
       lo += D.lightningLane[0] * payers * td; hi += D.lightningLane[1] * payers * td;
       notes.push("Lightning Lane Multi Pass: USD " + D.lightningLane[0] + "–" + D.lightningLane[1] + " por persona y día.");
     }
@@ -95,10 +95,28 @@ function tickets() {
     const d = (state.days.dl || 0) + (state.days.ca || 0);
     if (d) { lo += 104 * payers * d; hi += 224 * payers * d; notes.push("California: USD 104–224 por día según demanda; las entradas de varios días bajan el precio diario."); }
   }
+  let open = false; // true cuando hay precios "desde" sin máximo publicado
+  if (state.destinos.has("uor")) {
+    const ud = ["usf", "ioa", "epu"].reduce((s, k) => s + (state.days[k] || 0), 0);
+    if (ud) {
+      const n = Math.min(ud, 5), hopper = $("#ticketTipo").value === "hopper";
+      let perDay = hopper ? D.uorParkToPark[n] : D.uorDesde[n];
+      if (!hopper && ud === 1 && state.days.epu) perDay = 139;
+      if (!hopper && ud === 2 && state.days.epu) perDay = D.uorDesdeConEpic2;
+      const a = perDay * ud * payers; lo += a; hi += a; open = true;
+      notes.push("Universal Orlando: " + ud + " día" + (ud > 1 ? "s" : "") + " de parque desde USD " + fmt(perDay) + " por persona y día" + (hopper ? " (park-to-park)" : "") + "; en temporada alta cuesta más.");
+      if (state.extras.has("Universal Express (filas rápidas Universal)")) { lo += D.universalExpress[0] * payers * ud; hi += D.universalExpress[1] * payers * ud; notes.push("Universal Express: USD " + D.universalExpress[0] + "–" + D.universalExpress[1] + " por persona y día."); }
+    }
+    if (state.days.vb) { const a = 80 * payers * state.days.vb; lo += a; hi += a; open = true; notes.push("Volcano Bay: desde USD 80 por día."); }
+  }
+  if (state.destinos.has("ush") && state.days.ush) {
+    lo += D.ushDia[0] * payers * state.days.ush; hi += D.ushDia[1] * payers * state.days.ush;
+    notes.push("Universal Hollywood: USD " + D.ushDia[0] + "–" + D.ushDia[1] + " por día según fecha.");
+  }
   if ($("#ticketTipo").value === "hopper") notes.push("Park Hopper suma un adicional que confirma el agente.");
   if (state.destinos.has("cruise")) notes.push("Crucero: tarifa según barco, cabina e itinerario, la cotiza el agente.");
   if (state.pax.ninos) notes.push("Niños de 3 a 9 calculados a tarifa adulto (pagan algo menos).");
-  return { lo, hi, notes };
+  return { lo, hi, notes, open };
 }
 const fmtD = s => { if (!s) return "—"; const [y, m, d] = s.split("-"); return d + "/" + m + "/" + y.slice(2); };
 
@@ -121,8 +139,8 @@ function render() {
 
   const n = nights(), w = walking(), t = tickets(), pax = state.pax;
   $("#rTitulo").textContent = [...state.destinos].map(k => D.resorts[k].short).join(" + ");
-  const dest = state.destinos.has("dlr") && !state.destinos.has("wdw") ? "LAX" : "MCO";
-  $("#rCodigo").textContent = A.aeropuertoSalida + " → " + dest;
+  const aps = [...new Set([...state.destinos].map(k => D.resorts[k].airport))];
+  $("#rCodigo").textContent = A.aeropuertoSalida + " → " + aps.join(" · ");
   $("#rFechas").textContent = fmtD($("#fIda").value) + " → " + fmtD($("#fVuelta").value) + (n ? " · " + n + " n" : "");
   $("#rPax").textContent = pax.adultos + " ad" + (pax.ninos ? " · " + pax.ninos + " niñ" : "") + (pax.bebes ? " · " + pax.bebes + " beb" : "");
   if (w.days) {
@@ -138,11 +156,13 @@ function render() {
   if ((pax.ninos || pax.bebes) && w.days) flag("Con chicos chicos, llevá o alquilá cochecito: hasta " + fmt(w.hi / w.days) + " km en un día es mucho para piernas de 3 a 6 años.");
   if (w.days && n && w.days > n - 1) flag("Tenés " + w.days + " días de actividad en " + n + " noches: casi sin descanso. Sumá un día libre a mitad del viaje.");
   $("#rTicketsLbl").textContent = "Entradas · referencia precios públicos (" + D.actualizado + ")";
-  if (t.hi) $("#rTickets").innerHTML = "USD " + fmt(t.lo) + "–" + fmt(t.hi) + "<small>total</small>"; else $("#rTickets").textContent = "A cotizar";
+  if (t.hi && t.hi > t.lo) $("#rTickets").innerHTML = "USD " + fmt(t.lo) + "–" + fmt(t.hi) + (t.open ? "+" : "") + "<small>total</small>";
+  else if (t.hi) $("#rTickets").innerHTML = "desde USD " + fmt(t.lo) + "<small>total</small>";
+  else $("#rTickets").textContent = "A cotizar";
   $("#rTicketsNota").textContent = t.notes.join(" ");
 
   const L = [];
-  L.push("Hola! Quiero cotizar un viaje a Disney.", "");
+  L.push("Hola! Quiero cotizar un viaje a los parques.", "");
   L.push("Nombre: " + ($("#nombre").value || "(sin completar)"));
   L.push("WhatsApp: " + ($("#wsp").value || "(sin completar)"));
   L.push("Destino: " + [...state.destinos].map(k => D.resorts[k].name).join(" + "));
@@ -201,7 +221,7 @@ function renderParks() {
     d.querySelector(".pill").textContent = fmt((a + b) / 2) + " km";
     d.querySelector(".k1").textContent = fmt(a) + "–" + fmt(b);
     d.querySelector(".k2").textContent = fmt(a * D.pasosPorKm / 1000) + "–" + fmt(b * D.pasosPorKm / 1000) + " mil";
-    d.querySelector(".k3").textContent = p.t[1] ? (p.t[0] === p.t[1] ? "USD " + p.t[0] : "USD " + p.t[0] + "–" + p.t[1]) : (p.perNight ? "A cotizar" : "Libre");
+    d.querySelector(".k3").textContent = p.t[1] ? (p.t[0] === p.t[1] ? "USD " + p.t[0] : "USD " + p.t[0] + "–" + p.t[1]) : p.t[0] ? "desde USD " + p.t[0] : (p.perNight ? "A cotizar" : "Libre");
     d.querySelector(".w").textContent = p.walk;
     const ul = d.querySelector(".tips"); p.tips.forEach(t => { const li = document.createElement("li"); li.textContent = t; ul.appendChild(li); });
     d.querySelector(".src").textContent = p.est ? "Km: estimación nuestra, sin medición publicada todavía." : "Km: rango publicado para un día completo (8 a 12 h en el parque).";
@@ -219,7 +239,7 @@ function hav(a, b) { const R = 6371, r = x => x * Math.PI / 180; const dLa = r(b
 function nearest(pos) { let best = null; D.parks.filter(p => p.lat).forEach(p => { const d = hav(pos, p); if (!best || d < best.d) best = { p, d }; }); return best; }
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 
-[["wdw", "Walt Disney World"], ["dlr", "Disneyland Resort"]].forEach(([k, v]) => {
+Object.entries(D.resorts).filter(([, r]) => r.center).map(([k, r]) => [k, r.name]).forEach(([k, v]) => {
   const b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.textContent = v; b.dataset.k = k;
   b.onclick = () => { mapResort = k; follow = false; showResort(); }; $("#mapResort").appendChild(b);
 });
@@ -302,5 +322,6 @@ $("#iosClose").onclick = () => $("#iosSheet").hidden = true;
 if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
 
 render(); renderParks(); updateStats(null);
-const h = location.hash.slice(1); if (["viaje", "parques", "mapa"].includes(h)) showTab(h);
+const fromHash = () => { const h = location.hash.slice(1); if (["viaje", "parques", "mapa"].includes(h)) showTab(h); };
+fromHash(); window.addEventListener("hashchange", fromHash);
 })();
