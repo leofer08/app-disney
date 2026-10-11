@@ -377,7 +377,7 @@ function renderGuia() {
   });
   const ida = $("#fIda").value ? new Date($("#fIda").value + "T12:00") : null;
   const falta = ida ? Math.round((ida - new Date()) / 864e5) : null;
-  $("#ckNota").textContent = falta != null && falta >= 0 ? "Faltan " + falta + " días para tu salida (" + fmtD($("#fIda").value) + "). Te marcamos qué conviene hacer primero." : "Cargá la fecha de salida en Armar viaje y te decimos cuándo hacer cada cosa.";
+  $("#ckNota").textContent = falta != null && falta >= 0 ? "Faltan " + falta + " días para tu salida (" + fmtD($("#fIda").value) + "). Te marcamos qué conviene hacer primero." : "Cargá la fecha de salida en Armá tu viaje y te decimos cuándo hacer cada cosa.";
   const ck = $("#checklist"); ck.innerHTML = "";
   let hechos = 0;
   D.checklist.forEach(it => {
