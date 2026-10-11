@@ -22,6 +22,7 @@ const state = {
   days: Object.assign({ mk: 1, ep: 1, hs: 1, ak: 1, tl: 0, bb: 0, ds: 0, dl: 1, ca: 1, dt: 0, usf: 1, ioa: 1, epu: 1, vb: 0, cw: 0, ush: 1 }, saved?.days || {}),
   extras: new Set(saved?.extras || ["Vuelo desde Buenos Aires", "Traslados aeropuerto", "Asistencia al viajero"]),
   compras: saved?.compras ?? 1,
+  plan: saved?.plan || "qs",
   eventos: new Set(saved?.eventos || [])
 };
 const fields = ["fIda", "fVuelta", "hotel", "ticketTipo", "nombre", "wsp", "coment", "crNoches", "crPuerto"];
@@ -34,7 +35,7 @@ if (saved?.f) fields.forEach(id => { if (saved.f[id] != null) $("#" + id).value 
 
 function save() {
   const f = {}; fields.forEach(id => f[id] = $("#" + id).value);
-  store.set("viaje", { destinos: [...state.destinos], pax: state.pax, days: state.days, extras: [...state.extras], compras: state.compras, eventos: [...state.eventos], f });
+  store.set("viaje", { destinos: [...state.destinos], pax: state.pax, days: state.days, extras: [...state.extras], compras: state.compras, plan: state.plan, eventos: [...state.eventos], f });
 }
 
 /* ---------- Destinos ---------- */
@@ -112,6 +113,18 @@ D.extras.forEach((t, i) => {
   c.onchange = () => { c.checked ? state.extras.add(t) : state.extras.delete(t); render(); };
   l.append(c, s); $("#extras").appendChild(l);
 });
+// Plan de comidas: opciones y aclaración
+const planBox = document.createElement("div"); planBox.id = "planBox"; planBox.className = "planbox"; planBox.hidden = true;
+planBox.innerHTML = '<b>Plan de comidas de Disney</b><p class="note">Solo existe en Walt Disney World (Orlando) y solo si te alojás en un hotel de Disney. Se contrata para todas las noches del hotel y para todas las personas de la habitación.</p><div class="planopts"></div><p class="note" id="planEst"></p>';
+D.planesComida.forEach(pl => {
+  const l = document.createElement("label"); l.className = "planopt" + (pl.off ? " off" : ""); l.htmlFor = "plan-" + pl.id;
+  const r = document.createElement("input"); r.type = "radio"; r.name = "plan"; r.id = "plan-" + pl.id; r.value = pl.id; r.disabled = !!pl.off; r.checked = state.plan === pl.id;
+  r.onchange = () => { state.plan = pl.id; render(); };
+  const tx = document.createElement("div"); const t = document.createElement("b"); t.textContent = pl.name + (pl.off ? " · no disponible" : " · ≈ USD " + pl.price + " por adulto por noche");
+  const d = document.createElement("small"); d.textContent = pl.desc; tx.append(t, d); l.append(r, tx);
+  planBox.querySelector(".planopts").appendChild(l);
+});
+$("#extras").after(planBox);
 fields.forEach(id => $("#" + id).addEventListener("input", render));
 
 /* ---------- Cálculos ---------- */
@@ -190,6 +203,16 @@ function render() {
     pd.appendChild(row);
   });
   $("#cruiseBox").hidden = !state.destinos.has("cruise");
+  const wantsPlan = state.extras.has("Plan de comidas");
+  $("#planBox").hidden = !wantsPlan;
+  if (wantsPlan) {
+    const pl = D.planesComida.find(x => x.id === state.plan) || D.planesComida[0], nn = nights(), est = $("#planEst");
+    const warn = [];
+    if (!state.destinos.has("wdw")) warn.push("Elegiste destinos sin Walt Disney World: el plan no aplica.");
+    if (!$("#hotel").value.startsWith("Hotel Disney")) warn.push("Para tener plan de comidas el hotel tiene que ser de Disney.");
+    est.textContent = warn.length ? warn.join(" ") : (nn ? "Estimado para tu viaje: ≈ USD " + fmt(pl.price * nn * state.pax.adultos) + " (" + state.pax.adultos + " adulto" + (state.pax.adultos > 1 ? "s" : "") + " × " + nn + " noches). Niños de 3 a 9: precio infantil; en algunas fechas Disney los da gratis." : "");
+    est.className = "note" + (warn.length ? " warn" : "");
+  }
 
   const n = nights(), w = walking(), t = tickets(), pax = state.pax;
   $("#rTitulo").textContent = [...state.destinos].map(k => D.resorts[k].short).join(" + ");
@@ -246,7 +269,7 @@ function render() {
   if (state.destinos.has("cruise")) L.push("Crucero: " + $("#crNoches").value + " noches desde " + $("#crPuerto").value);
   L.push("Alojamiento: " + $("#hotel").value);
   L.push("Entrada: " + $("#ticketTipo").selectedOptions[0].textContent);
-  if (state.extras.size) L.push("Extras: " + [...state.extras].join(", "));
+  if (state.extras.size) L.push("Extras: " + [...state.extras].map(x => x === "Plan de comidas" ? "Plan de comidas (" + (D.planesComida.find(p => p.id === state.plan) || D.planesComida[0]).name + ")" : x).join(", "));
   if ($("#coment").value.trim()) L.push("Comentarios: " + $("#coment").value.trim());
   if (t.hi) L.push("", "Referencia de entradas vista en la app: USD " + fmt(t.lo) + "-" + fmt(t.hi));
   const msg = L.join("\n");

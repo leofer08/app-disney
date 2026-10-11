@@ -126,3 +126,12 @@ footer.disc{font-size:.74rem;color:var(--muted);padding-block:18px 4px}
 .ev-add input{width:18px;height:18px;accent-color:var(--accent)}
 .pill-extra{background:color-mix(in srgb,var(--accent) 16%,transparent)}
 .evento.vacio{background:var(--bg);border-style:dashed}
+section.panel > label.f{flex:none}
+.planbox{display:flex;flex-direction:column;gap:8px;border:1.5px solid var(--accent);border-radius:12px;padding:12px}
+.planopts{display:flex;flex-direction:column;gap:8px}
+.planopt{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--line);border-radius:10px;padding:9px 10px;cursor:pointer}
+.planopt input{width:18px;height:18px;margin-top:2px;flex-shrink:0;accent-color:var(--accent)}
+.planopt div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.planopt small{color:var(--muted);font-size:.8rem}
+.planopt.off{opacity:.55;cursor:not-allowed}
+.note.warn{color:var(--accent);font-weight:600}

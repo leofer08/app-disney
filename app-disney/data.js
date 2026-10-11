@@ -157,6 +157,16 @@ window.DATA = {
       desc:"Fiesta de Halloween de noche con disfraces, caramelos y desfile de villanos." }
   ],
 
+  // Planes de comidas de Disney (solo con hotel Disney en Walt Disney World). Precio aprox. por adulto y por noche, con impuestos, sin propina.
+  planesComida: [
+    { id:"qs", name:"Quick-Service Dining Plan", price:60,
+      desc:"Por noche de hotel: 2 comidas de servicio rápido (pedís en el mostrador) + 1 snack o bebida. Incluye un vaso recargable para usar en el hotel." },
+    { id:"ddp", name:"Disney Dining Plan", price:99,
+      desc:"Por noche de hotel: 1 comida de servicio rápido + 1 comida en restaurante con mozo + 1 snack o bebida. Incluye vaso recargable." },
+    { id:"dx", name:"Deluxe Dining Plan", price:null, off:true,
+      desc:"Era el plan completo: 3 comidas por noche en cualquier restaurante + 2 snacks. Disney no lo ofrece actualmente; si vuelve, te avisamos." }
+  ],
+
   hoteles: ["Hotel Disney categoría Value","Hotel Disney categoría Moderate","Hotel Disney categoría Deluxe","Hotel de Universal","Hotel fuera de los parques","Casa / alquiler temporario","Ya tengo alojamiento"],
   extras: ["Vuelo desde Buenos Aires","Traslados aeropuerto","Asistencia al viajero","Lightning Lane (filas rápidas Disney)","Universal Express (filas rápidas Universal)","Plan de comidas","Alquiler de auto"],
   puertosCrucero: ["Port Canaveral (Orlando)","Fort Lauderdale","Miami","Galveston","Me da igual"]
