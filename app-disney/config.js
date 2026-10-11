@@ -18,3 +18,16 @@ window.AGENCIA = {
   // Aeropuerto de salida por defecto
   aeropuertoSalida: "EZE"
 };
+
+// ===============================================
+//  FIREBASE (base de datos de pedidos)
+//  Estos datos son públicos por diseño: la seguridad la dan las reglas de Firestore.
+// ===============================================
+window.FIREBASE = {
+  apiKey: "AIzaSyAdxroGq_tDSWpfVvMBYNPMGMdf8RxAbNM",
+  authDomain: "app-disney-5d491.firebaseapp.com",
+  projectId: "app-disney-5d491",
+  storageBucket: "app-disney-5d491.firebasestorage.app",
+  messagingSenderId: "1001925327267",
+  appId: "1:1001925327267:web:0762a4680c10b160b3c216"
+};

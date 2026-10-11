@@ -276,12 +276,45 @@ function render() {
   $("#msg").textContent = msg;
   const num = String(A.whatsapp || "").replace(/\D/g, "");
   $("#btnWsp").href = "https://wa.me/" + num + "?text=" + encodeURIComponent(msg);
+  const plSel = state.extras.has("Plan de comidas") ? (D.planesComida.find(p => p.id === state.plan) || D.planesComida[0]).name : "";
+  window.__pedido = {
+    nombre: $("#nombre").value.trim().slice(0, 120), wsp: $("#wsp").value.trim().slice(0, 40),
+    destinos: [...state.destinos].map(k => D.resorts[k].name),
+    fechaIda: $("#fIda").value, fechaVuelta: $("#fVuelta").value, noches: n,
+    pax: { adultos: pax.adultos, ninos: pax.ninos, bebes: pax.bebes },
+    plan: w.list.map(([p, d]) => ({ parque: p.name, dias: d })), compras: state.compras,
+    eventos: activeEvents().filter(e => e.extra && state.eventos.has(e.id)).map(e => e.name),
+    hotel: $("#hotel").value, entrada: $("#ticketTipo").selectedOptions[0].textContent,
+    extras: [...state.extras], planComida: plSel, comentarios: $("#coment").value.trim().slice(0, 1000),
+    refEntradas: { lo: Math.round(t.lo), hi: Math.round(t.hi), abierto: !!t.open },
+    kmEstimados: { lo: Math.round(w.lo), hi: Math.round(w.hi) }
+  };
   save();
 }
 $("#btnAjustar").onclick = () => { $("#fVuelta").value = $("#btnAjustar").dataset.to; render(); };
-$("#btnWsp").addEventListener("click", e => {
-  if (!$("#nombre").value.trim()) { e.preventDefault(); $("#toast").textContent = "Completá tu nombre en el paso 5 antes de enviar."; $("#nombre").focus(); }
-  else $("#toast").textContent = "";
+let enviando = false;
+$("#btnWsp").addEventListener("click", async e => {
+  e.preventDefault();
+  if (!$("#nombre").value.trim()) { $("#toast").textContent = "Completá tu nombre en el paso 6 antes de enviar."; $("#nombre").focus(); return; }
+  if (enviando) return;
+  enviando = true; $("#toast").textContent = "Registrando tu pedido…";
+  const base = $("#msg").textContent;
+  let last = null; try { last = JSON.parse(sessionStorage.getItem("ultimoPedido") || "null"); } catch (err) {}
+  let codigo = last && last.msg === base ? last.codigo : Math.random().toString(36).slice(2, 8).toUpperCase();
+  const mensaje = base + "\n\nCódigo de pedido: " + codigo;
+  let guardado = !!(last && last.msg === base);
+  if (!guardado && window.guardarPedido) {
+    try {
+      await Promise.race([window.guardarPedido({ ...window.__pedido, codigo, mensaje }), new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), 4000))]);
+      guardado = true;
+      try { sessionStorage.setItem("ultimoPedido", JSON.stringify({ msg: base, codigo })); } catch (err) {}
+    } catch (err) { console.warn("No se pudo registrar el pedido", err); }
+  }
+  const num = String(A.whatsapp || "").replace(/\D/g, "");
+  const url = "https://wa.me/" + num + "?text=" + encodeURIComponent(mensaje);
+  $("#toast").textContent = guardado ? "Pedido registrado (código " + codigo + "). Se abre WhatsApp para enviarlo." : "Se abre WhatsApp para enviar tu pedido.";
+  enviando = false;
+  if (!window.open(url, "_blank")) location.href = url;
 });
 $("#btnCopy").onclick = async () => {
   const m = $("#msg").textContent;

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Panel de pedidos</title>
+<meta name="theme-color" content="#13234A">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="styles.css?v=7">
+<link rel="stylesheet" href="agente.css?v=7">
+</head>
+<body class="agente">
+
+<!-- ============ LOGIN ============ -->
+<section id="vLogin" class="login-wrap">
+  <form class="login" id="fLogin" autocomplete="on">
+    <span class="eyebrow" id="agNombreL">Agencia</span>
+    <h1>Panel de pedidos</h1>
+    <p class="note">Ingresá con el usuario de agente.</p>
+    <label class="f" for="lEmail">Email<input id="lEmail" type="email" autocomplete="username" required></label>
+    <label class="f" for="lPass">Contraseña<input id="lPass" type="password" autocomplete="current-password" required></label>
+    <button class="btn primary" type="submit" id="lBtn">Ingresar</button>
+    <button class="linkbtn" type="button" id="lReset">Olvidé mi contraseña</button>
+    <p class="toast" id="lMsg" role="status"></p>
+  </form>
+</section>
+
+<!-- ============ PANEL ============ -->
+<div id="vPanel" hidden>
+  <header class="ptop">
+    <div class="brandline"><span class="eyebrow" id="agNombre">Agencia</span><h1>Pedidos</h1></div>
+    <div class="row">
+      <span class="note" id="who"></span>
+      <button class="btn ghost sm" id="btnNuevo" type="button">+ Pedido manual</button>
+      <button class="btn ghost sm" id="btnSalir" type="button">Salir</button>
+    </div>
+  </header>
+
+  <section class="kpis" aria-label="Resumen">
+    <button class="kpi" data-f="sincontacto" type="button"><span class="k">Sin contactar</span><b id="kNuevos">0</b><small id="kNuevosSub">—</small></button>
+    <button class="kpi" data-f="hoy" type="button"><span class="k">Seguimiento para hoy</span><b id="kHoy">0</b><small>incluye atrasados</small></button>
+    <button class="kpi" data-f="cotizado" type="button"><span class="k">Cotizados esperando</span><b id="kCot">0</b><small id="kCotSub">—</small></button>
+    <button class="kpi" data-f="vendido" type="button"><span class="k">Vendidos este mes</span><b id="kVen">0</b><small id="kVenSub">—</small></button>
+  </section>
+
+  <div class="pbody">
+    <section class="lista">
+      <div class="filtros">
+        <div class="chips" id="fEstados"></div>
+        <input id="fBuscar" type="search" placeholder="Buscar por nombre, teléfono, código o destino">
+      </div>
+      <div id="lista" class="items" aria-live="polite"></div>
+    </section>
+    <aside class="detalle" id="detalle" aria-live="polite">
+      <div class="vacio-det"><b>Elegí un pedido</b><p class="note">Acá vas a ver el detalle, cambiar el estado, anotar el seguimiento y escribirle al cliente.</p></div>
+    </aside>
+  </div>
+</div>
+
+<!-- ============ PEDIDO MANUAL ============ -->
+<div class="modal" id="mNuevo" hidden>
+  <form class="modal-card" id="fNuevo">
+    <h2>Pedido manual</h2>
+    <p class="note">Para consultas que llegan por WhatsApp, teléfono o mostrador.</p>
+    <label class="f" for="nNombre">Nombre<input id="nNombre" required maxlength="120"></label>
+    <label class="f" for="nWsp">WhatsApp<input id="nWsp" inputmode="tel" maxlength="40"></label>
+    <label class="f" for="nDest">Destino<input id="nDest" placeholder="Ej: Disney Orlando + Universal" maxlength="120"></label>
+    <div class="row">
+      <label class="f" for="nIda">Salida<input type="date" id="nIda"></label>
+      <label class="f" for="nVuelta">Regreso<input type="date" id="nVuelta"></label>
+    </div>
+    <label class="f" for="nNota">Detalle<textarea id="nNota" rows="3" maxlength="2000" placeholder="Ej: 2 adultos y 2 chicos, quieren hotel Disney"></textarea></label>
+    <div class="row">
+      <button class="btn primary wide" type="submit">Guardar pedido</button>
+      <button class="btn ghost wide" type="button" id="nCancel">Cancelar</button>
+    </div>
+  </form>
+</div>
+
+<script src="config.js?v=7"></script>
+<script type="module" src="agente.js?v=7"></script>
+</body>
+</html>
