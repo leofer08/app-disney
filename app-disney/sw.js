@@ -1,5 +1,5 @@
 // Cambiá la versión cada vez que subas cambios, así los celulares bajan lo nuevo.
-const VERSION = "v3";
+const VERSION = "v4";
 const CACHE = "app-disney-" + VERSION;
 const SHELL = ["./", "index.html", "styles.css", "app.js", "data.js", "config.js", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "vendor/leaflet/leaflet.js", "vendor/leaflet/leaflet.css"];
 
@@ -17,9 +17,9 @@ self.addEventListener("fetch", e => {
   // Archivos propios: primero internet, si no hay señal usa la copia guardada
   if (url.origin === location.origin) {
     e.respondWith(fetch(e.request).then(r => { const copy = r.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)); return r; })
-      .catch(() => caches.match(e.request).then(r => r || caches.match("index.html"))));
+      .catch(() => caches.match(e.request, { ignoreSearch: true }).then(r => r || caches.match("index.html"))));
     return;
   }
   // Fuentes y librería del mapa: copia guardada primero
-  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request).then(res => { const copy = res.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)); return res; })));
+  e.respondWith(caches.match(e.request, { ignoreSearch: true }).then(r => r || fetch(e.request).then(res => { const copy = res.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)); return res; })));
 });

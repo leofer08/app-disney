@@ -64,7 +64,7 @@ stepper($("#comprasStep"), () => state.compras, v => state.compras = v, 0, 6);
 
 /* ---------- Eventos ---------- */
 function tripRange() { const a = $("#fIda").value, b = $("#fVuelta").value; return a && b && b >= a ? [a, b] : null; }
-function eventsFor(r) { const t = tripRange(); if (!t) return []; return D.eventos.filter(e => (!r || e.r === r) && e.from <= t[1] && e.to >= t[0]); }
+function eventsFor(r) { const t = tripRange(); if (!t) return []; return (D.eventos || []).filter(e => (!r || e.r === r) && e.from <= t[1] && e.to >= t[0]); }
 const activeEvents = () => eventsFor().filter(e => state.destinos.has(e.r));
 const fmtShort = s => { const [y, m, d] = s.split("-"); return +d + " " + ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"][+m - 1]; };
 function renderEventos() {
