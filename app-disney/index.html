@@ -30,14 +30,9 @@
       <p class="hero-sub">Elegí destino, fechas y parques. Te mostramos cuánto vas a caminar y una referencia de entradas; el precio final lo arma tu agente.</p>
     </div>
 
-    <section class="panel">
-      <div class="panel-head"><h2>Destino</h2><span class="step">1 / 5</span></div>
-      <div class="chips" id="destinos"></div>
-      <p class="note">Podés combinar: por ejemplo Disney + Universal en Orlando, o sumar un crucero.</p>
-    </section>
 
     <section class="panel">
-      <div class="panel-head"><h2>Fechas y viajeros</h2><span class="step">2 / 5</span></div>
+      <div class="panel-head"><h2>Fechas y viajeros</h2><span class="step">1 / 6</span></div>
       <div class="row">
         <label class="f" for="fIda">Salida<input type="date" id="fIda"></label>
         <label class="f" for="fVuelta">Regreso<input type="date" id="fVuelta"></label>
@@ -50,9 +45,22 @@
     </section>
 
     <section class="panel">
-      <div class="panel-head"><h2>Días por parque</h2><span class="step">3 / 5</span></div>
-      <p class="note">Con esto calculamos entradas y cuánto vas a caminar.</p>
+      <div class="panel-head"><h2>Destino</h2><span class="step">2 / 6</span></div>
+      <div class="chips" id="destinos"></div>
+      <p class="note">Podés combinar: por ejemplo Disney + Universal en Orlando, o sumar un crucero. Te marcamos cuántos eventos especiales hay en tus fechas.</p>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Eventos en tus fechas</h2><span class="step">3 / 6</span></div>
+      <p class="note">Fiestas, festivales y temporadas especiales que coinciden con tu viaje. Los que tienen entrada aparte los podés sumar al pedido.</p>
+      <div class="stack" id="eventos" style="gap:10px"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Días por parque y compras</h2><span class="step">4 / 6</span></div>
+      <p class="note">Con esto calculamos entradas, cuánto vas a caminar y cuántas noches de hotel necesitás.</p>
       <div id="parkDays"></div>
+      <div class="counter"><div class="lbl"><b>Días de compras</b><small>Outlets y shoppings · 6–10 km por día</small></div><div class="stepper" id="comprasStep"></div></div>
       <div id="cruiseBox" hidden class="row">
         <label class="f" for="crNoches">Noches de crucero
           <select id="crNoches"><option>3</option><option selected>4</option><option>5</option><option>7</option></select></label>
@@ -61,7 +69,7 @@
     </section>
 
     <section class="panel">
-      <div class="panel-head"><h2>Hotel y extras</h2><span class="step">4 / 5</span></div>
+      <div class="panel-head"><h2>Hotel y extras</h2><span class="step">5 / 6</span></div>
       <label class="f" for="hotel">Alojamiento<select id="hotel"></select></label>
       <label class="f" for="ticketTipo">Tipo de entrada
         <select id="ticketTipo">
@@ -72,7 +80,7 @@
     </section>
 
     <section class="panel">
-      <div class="panel-head"><h2>Tus datos</h2><span class="step">5 / 5</span></div>
+      <div class="panel-head"><h2>Tus datos</h2><span class="step">6 / 6</span></div>
       <div class="row">
         <label class="f" for="nombre">Nombre<input id="nombre" placeholder="Ej: Familia Pérez" autocomplete="name"></label>
         <label class="f" for="wsp">WhatsApp<input id="wsp" inputmode="tel" placeholder="11 5555-0000" autocomplete="tel"></label>
@@ -97,6 +105,13 @@
       </div>
       <div class="walkbar" aria-hidden="true"><i id="rBar"></i></div>
       <p class="note" id="rKmNota"></p>
+      <div class="perf"></div>
+      <div>
+        <div class="eyebrow">Noches de hotel</div>
+        <div class="big" id="rNoches"></div>
+        <p class="note" id="rNochesNota" style="margin-top:4px"></p>
+        <button class="btn ghost" id="btnAjustar" type="button" hidden style="margin-top:10px;padding:9px 14px;font-size:.9rem">Ajustar regreso</button>
+      </div>
       <div id="rFlags" class="stack" style="gap:8px"></div>
       <div class="perf"></div>
       <div>

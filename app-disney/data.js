@@ -100,6 +100,63 @@ window.DATA = {
   ushDia: [109,159],
   impuestoFlorida: 6.5,
 
+  // Días de compras (outlets): km estimados por día
+  comprasKm: [6.4, 9.7],
+
+  // Eventos especiales. from/to: fechas (AAAA-MM-DD). aprox:true = fechas estimadas según años anteriores.
+  // noches:true = solo algunas noches dentro del rango. extra:true = entrada aparte (se puede sumar al pedido).
+  eventos: [
+    // Walt Disney World
+    { id:"mvmcp26", r:"wdw", name:"Mickey's Very Merry Christmas Party", place:"Magic Kingdom", from:"2026-11-08", to:"2026-12-22", noches:true, extra:true, price:[189,229],
+      desc:"Fiesta navideña de noche: desfile, fuegos especiales, nieve en Main Street y personajes con trajes de fiesta." },
+    { id:"jolly26", r:"wdw", name:"Disney Jollywood Nights", place:"Hollywood Studios", from:"2026-11-07", to:"2027-01-05", noches:true, extra:true, price:[169,199],
+      desc:"Fiesta navideña de noche con shows y música estilo Hollywood clásico." },
+    { id:"navwdw26", r:"wdw", name:"Temporada navideña", place:"Todos los parques", from:"2026-11-13", to:"2027-01-06",
+      desc:"Decoración, shows y desfiles navideños incluidos con la entrada común." },
+    { id:"fothol26", r:"wdw", name:"EPCOT Festival of the Holidays", place:"EPCOT", from:"2026-11-27", to:"2026-12-30",
+      desc:"Puestos de comida navideña de distintos países y coros en vivo." },
+    { id:"fw26", r:"wdw", name:"EPCOT Food & Wine Festival", place:"EPCOT", from:"2026-08-27", to:"2026-11-21",
+      desc:"Decenas de puestos con platos y bebidas de todo el mundo (se pagan aparte, la entrada al festival está incluida)." },
+    { id:"arts27", r:"wdw", name:"EPCOT Festival of the Arts", place:"EPCOT", from:"2027-01-15", to:"2027-03-01",
+      desc:"Arte, música en vivo y comida de autor en todo World Showcase." },
+    { id:"flower27", r:"wdw", name:"EPCOT Flower & Garden Festival", place:"EPCOT", from:"2027-03-10", to:"2027-05-31",
+      desc:"Jardines y esculturas de personajes hechas con plantas, más puestos de comida." },
+    { id:"mnsshp27", r:"wdw", name:"Mickey's Not-So-Scary Halloween Party", place:"Magic Kingdom", from:"2027-08-13", to:"2027-10-31", aprox:true, noches:true, extra:true, price:[119,229],
+      desc:"Fiesta de Halloween para toda la familia: disfraces, caramelos, desfile y fuegos especiales." },
+    { id:"fw27", r:"wdw", name:"EPCOT Food & Wine Festival", place:"EPCOT", from:"2027-08-26", to:"2027-11-20", aprox:true,
+      desc:"Decenas de puestos con platos y bebidas de todo el mundo." },
+    { id:"mvmcp27", r:"wdw", name:"Mickey's Very Merry Christmas Party", place:"Magic Kingdom", from:"2027-11-07", to:"2027-12-21", aprox:true, noches:true, extra:true, price:[189,229],
+      desc:"Fiesta navideña de noche: desfile, fuegos especiales y nieve en Main Street." },
+    { id:"navwdw27", r:"wdw", name:"Temporada navideña", place:"Todos los parques", from:"2027-11-12", to:"2028-01-06", aprox:true,
+      desc:"Decoración, shows y desfiles navideños incluidos con la entrada común." },
+
+    // Universal Orlando
+    { id:"hhn26", r:"uor", name:"Halloween Horror Nights", place:"Universal Studios Florida", from:"2026-08-28", to:"2026-11-01", noches:true, extra:true,
+      desc:"Casas del terror y zonas de sustos de noche. No recomendado para chicos." },
+    { id:"holu26", r:"uor", name:"Holidays at Universal", place:"Universal Studios e Islands of Adventure", from:"2026-11-14", to:"2027-01-03",
+      desc:"Desfile navideño, show de luces en Hogwarts y el Grinch, incluidos con la entrada." },
+    { id:"mardi27", r:"uor", name:"Universal Mardi Gras", place:"Universal Studios Florida", from:"2027-02-06", to:"2027-04-03", aprox:true,
+      desc:"Desfile de carrozas, comida de Nueva Orleans y recitales en vivo, incluidos con la entrada." },
+    { id:"hhn27", r:"uor", name:"Halloween Horror Nights", place:"Universal Studios Florida", from:"2027-08-27", to:"2027-11-01", aprox:true, noches:true, extra:true,
+      desc:"Casas del terror y zonas de sustos de noche. No recomendado para chicos." },
+    { id:"holu27", r:"uor", name:"Holidays at Universal", place:"Universal Studios e Islands of Adventure", from:"2027-11-13", to:"2028-01-03", aprox:true,
+      desc:"Desfile navideño y show de luces en Hogwarts, incluidos con la entrada." },
+
+    // Disneyland
+    { id:"muertos26", r:"dlr", name:"Celebración de Coco / Día de los Muertos", place:"California Adventure", from:"2026-08-21", to:"2026-11-02",
+      desc:"Plaza de la Familia con música, ofrendas y comida mexicana." },
+    { id:"holdl26", r:"dlr", name:"Temporada navideña", place:"Disneyland y California Adventure", from:"2026-11-18", to:"2027-01-06", aprox:true,
+      desc:"El castillo nevado, desfile navideño y fuegos especiales, incluidos con la entrada." },
+    { id:"lny27", r:"dlr", name:"Lunar New Year", place:"California Adventure", from:"2027-01-22", to:"2027-02-21", aprox:true,
+      desc:"Celebración del Año Nuevo lunar con desfile, comida asiática y personajes." },
+    { id:"fwdl27", r:"dlr", name:"Food & Wine Festival", place:"California Adventure", from:"2027-03-05", to:"2027-04-26", aprox:true,
+      desc:"Puestos de comida y vino de California." },
+    { id:"hallo27", r:"dlr", name:"Halloween Time", place:"Disneyland y California Adventure", from:"2027-08-20", to:"2027-10-31", aprox:true,
+      desc:"Decoración de Halloween y atracciones con versión especial." },
+    { id:"oogie27", r:"dlr", name:"Oogie Boogie Bash", place:"California Adventure", from:"2027-08-24", to:"2027-10-31", aprox:true, noches:true, extra:true,
+      desc:"Fiesta de Halloween de noche con disfraces, caramelos y desfile de villanos." }
+  ],
+
   hoteles: ["Hotel Disney categoría Value","Hotel Disney categoría Moderate","Hotel Disney categoría Deluxe","Hotel de Universal","Hotel fuera de los parques","Casa / alquiler temporario","Ya tengo alojamiento"],
   extras: ["Vuelo desde Buenos Aires","Traslados aeropuerto","Asistencia al viajero","Lightning Lane (filas rápidas Disney)","Universal Express (filas rápidas Universal)","Plan de comidas","Alquiler de auto"],
   puertosCrucero: ["Port Canaveral (Orlando)","Fort Lauderdale","Miami","Galveston","Me da igual"]

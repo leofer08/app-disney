@@ -20,7 +20,9 @@ const state = {
   destinos: new Set(saved?.destinos || ["wdw"]),
   pax: saved?.pax || { adultos: 2, ninos: 0, bebes: 0 },
   days: Object.assign({ mk: 1, ep: 1, hs: 1, ak: 1, tl: 0, bb: 0, ds: 0, dl: 1, ca: 1, dt: 0, usf: 1, ioa: 1, epu: 1, vb: 0, cw: 0, ush: 1 }, saved?.days || {}),
-  extras: new Set(saved?.extras || ["Vuelo desde Buenos Aires", "Traslados aeropuerto", "Asistencia al viajero"])
+  extras: new Set(saved?.extras || ["Vuelo desde Buenos Aires", "Traslados aeropuerto", "Asistencia al viajero"]),
+  compras: saved?.compras ?? 1,
+  eventos: new Set(saved?.eventos || [])
 };
 const fields = ["fIda", "fVuelta", "hotel", "ticketTipo", "nombre", "wsp", "coment", "crNoches", "crPuerto"];
 
@@ -32,12 +34,13 @@ if (saved?.f) fields.forEach(id => { if (saved.f[id] != null) $("#" + id).value 
 
 function save() {
   const f = {}; fields.forEach(id => f[id] = $("#" + id).value);
-  store.set("viaje", { destinos: [...state.destinos], pax: state.pax, days: state.days, extras: [...state.extras], f });
+  store.set("viaje", { destinos: [...state.destinos], pax: state.pax, days: state.days, extras: [...state.extras], compras: state.compras, eventos: [...state.eventos], f });
 }
 
 /* ---------- Destinos ---------- */
 Object.entries(D.resorts).forEach(([k, v]) => {
-  const b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.textContent = v.name; b.dataset.k = k;
+  const b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.dataset.k = k;
+  const nm = document.createElement("span"); nm.textContent = v.name; const bd = document.createElement("span"); bd.className = "badge"; b.append(nm, bd);
   b.onclick = () => { if (state.destinos.has(k)) { if (state.destinos.size > 1) state.destinos.delete(k); } else state.destinos.add(k); render(); };
   $("#destinos").appendChild(b);
 });
@@ -57,6 +60,38 @@ document.querySelectorAll(".stepper[data-k]").forEach(el => {
   const k = el.dataset.k; stepper(el, () => state.pax[k], v => state.pax[k] = v, k === "adultos" ? 1 : 0, 9);
 });
 
+stepper($("#comprasStep"), () => state.compras, v => state.compras = v, 0, 6);
+
+/* ---------- Eventos ---------- */
+function tripRange() { const a = $("#fIda").value, b = $("#fVuelta").value; return a && b && b >= a ? [a, b] : null; }
+function eventsFor(r) { const t = tripRange(); if (!t) return []; return D.eventos.filter(e => (!r || e.r === r) && e.from <= t[1] && e.to >= t[0]); }
+const activeEvents = () => eventsFor().filter(e => state.destinos.has(e.r));
+const fmtShort = s => { const [y, m, d] = s.split("-"); return +d + " " + ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"][+m - 1]; };
+function renderEventos() {
+  const box = $("#eventos"); box.innerHTML = "";
+  const list = activeEvents();
+  if (!tripRange()) { box.innerHTML = '<p class="note">Elegí fechas en el paso 1 para ver los eventos.</p>'; return; }
+  if (!list.length) { const p = document.createElement("p"); p.className = "note"; p.textContent = "No hay eventos especiales en tus fechas para los destinos elegidos. Los parques funcionan normal."; box.appendChild(p); return; }
+  list.forEach(e => {
+    const card = document.createElement(e.extra ? "label" : "div"); card.className = "evento" + (e.extra ? " sel" : "");
+    const top = document.createElement("div"); top.className = "ev-top";
+    const t = document.createElement("b"); t.textContent = e.name;
+    const tag = document.createElement("span"); tag.className = "pill" + (e.extra ? " pill-extra" : ""); tag.textContent = e.extra ? "Entrada aparte" : "Incluido";
+    top.append(t, tag);
+    const meta = document.createElement("small"); meta.textContent = D.resorts[e.r].short + " · " + e.place + " · " + fmtShort(e.from) + " al " + fmtShort(e.to) + (e.noches ? " (algunas noches)" : "") + (e.aprox ? " · fechas aproximadas" : "");
+    const desc = document.createElement("p"); desc.textContent = e.desc;
+    card.append(top, meta, desc);
+    if (e.extra) {
+      const row = document.createElement("div"); row.className = "ev-add";
+      const c = document.createElement("input"); c.type = "checkbox"; c.id = "ev-" + e.id; c.checked = state.eventos.has(e.id);
+      c.onchange = () => { c.checked ? state.eventos.add(e.id) : state.eventos.delete(e.id); render(); };
+      const l = document.createElement("span"); l.textContent = "Sumar al pedido" + (e.price ? " · USD " + e.price[0] + "–" + e.price[1] + " por persona" : " · precio a cotizar");
+      row.append(c, l); card.appendChild(row); card.htmlFor = c.id;
+    }
+    box.appendChild(card);
+  });
+}
+
 /* ---------- Extras ---------- */
 D.extras.forEach((t, i) => {
   const l = document.createElement("label"); l.className = "check"; l.htmlFor = "ex" + i;
@@ -74,6 +109,7 @@ function walking() {
   let lo = 0, hi = 0, days = 0; const list = [];
   activeParks().forEach(p => { const d = state.days[p.id] || 0; if (d) { lo += p.km[0] * d; hi += p.km[1] * d; days += d; list.push([p, d]); } });
   if (state.destinos.has("cruise")) { const n = +$("#crNoches").value; const p = D.parks.find(x => x.id === "cr"); lo += p.km[0] * n; hi += p.km[1] * n; days += n; list.push([p, n]); }
+  if (state.compras) { lo += D.comprasKm[0] * state.compras; hi += D.comprasKm[1] * state.compras; days += state.compras; }
   return { lo, hi, days, list };
 }
 function tickets() {
@@ -113,6 +149,10 @@ function tickets() {
     lo += D.ushDia[0] * payers * state.days.ush; hi += D.ushDia[1] * payers * state.days.ush;
     notes.push("Universal Hollywood: USD " + D.ushDia[0] + "–" + D.ushDia[1] + " por día según fecha.");
   }
+  activeEvents().filter(e => e.extra && state.eventos.has(e.id)).forEach(e => {
+    if (e.price) { lo += e.price[0] * payers; hi += e.price[1] * payers; notes.push(e.name + ": USD " + e.price[0] + "–" + e.price[1] + " por persona según la noche."); }
+    else notes.push(e.name + ": precio según la noche, lo cotiza el agente.");
+  });
   if ($("#ticketTipo").value === "hopper") notes.push("Park Hopper suma un adicional que confirma el agente.");
   if (state.destinos.has("cruise")) notes.push("Crucero: tarifa según barco, cabina e itinerario, la cotiza el agente.");
   if (state.pax.ninos) notes.push("Niños de 3 a 9 calculados a tarifa adulto (pagan algo menos).");
@@ -122,7 +162,9 @@ const fmtD = s => { if (!s) return "—"; const [y, m, d] = s.split("-"); return
 
 /* ---------- Render viaje ---------- */
 function render() {
-  document.querySelectorAll("#destinos .chip").forEach(b => b.setAttribute("aria-pressed", state.destinos.has(b.dataset.k)));
+  document.querySelectorAll("#destinos .chip").forEach(b => { b.setAttribute("aria-pressed", state.destinos.has(b.dataset.k)); const c = eventsFor(b.dataset.k).length; b.querySelector(".badge").textContent = c ? c + (c > 1 ? " eventos" : " evento") : ""; });
+  document.querySelectorAll("#comprasStep output").forEach(o => o.textContent = state.compras);
+  renderEventos();
   document.querySelectorAll(".stepper[data-k]").forEach(el => el.querySelector("output").textContent = state.pax[el.dataset.k]);
 
   const pd = $("#parkDays"); pd.innerHTML = ""; let lastR = null;
@@ -154,7 +196,23 @@ function render() {
   const fl = $("#rFlags"); fl.innerHTML = "";
   const flag = s => { const d = document.createElement("div"); d.className = "flag"; d.textContent = s; fl.appendChild(d); };
   if ((pax.ninos || pax.bebes) && w.days) flag("Con chicos chicos, llevá o alquilá cochecito: hasta " + fmt(w.hi / w.days) + " km en un día es mucho para piernas de 3 a 6 años.");
-  if (w.days && n && w.days > n - 1) flag("Tenés " + w.days + " días de actividad en " + n + " noches: casi sin descanso. Sumá un día libre a mitad del viaje.");
+  const need = w.days ? w.days + 1 : 0;
+  $("#rNoches").innerHTML = n ? n + "<small>noches elegidas</small>" : "—";
+  const ajustar = $("#btnAjustar");
+  if (!w.days) { $("#rNochesNota").textContent = ""; ajustar.hidden = true; }
+  else {
+    const pdays = w.list.filter(([p]) => !p.perNight).reduce((x, [, d]) => x + d, 0);
+    const plan = w.days + " día" + (w.days > 1 ? "s" : "") + " de actividad (" + pdays + " de parques" + (state.compras ? ", " + state.compras + " de compras" : "") + (state.destinos.has("cruise") ? ", crucero" : "") + ") + llegada y salida";
+    if (n < need) {
+      $("#rNochesNota").textContent = plan + ": te conviene quedarte " + need + " noches. " + (need - n > 1 ? "Te faltan " + (need - n) + " noches." : "Te falta 1 noche.");
+      const d = new Date($("#fIda").value + "T12:00"); d.setDate(d.getDate() + need);
+      ajustar.textContent = "Ajustar regreso al " + fmtD(iso(d)); ajustar.dataset.to = iso(d); ajustar.hidden = false;
+    } else {
+      const libres = n - need;
+      $("#rNochesNota").textContent = plan + " = " + need + " noches. " + (libres ? "Te quedan " + libres + " día" + (libres > 1 ? "s" : "") + " libre" + (libres > 1 ? "s" : "") + " para descansar." : "Plan justo, sin días libres.");
+      ajustar.hidden = true;
+    }
+  }
   $("#rTicketsLbl").textContent = "Entradas · referencia precios públicos (" + D.actualizado + ")";
   if (t.hi && t.hi > t.lo) $("#rTickets").innerHTML = "USD " + fmt(t.lo) + "–" + fmt(t.hi) + (t.open ? "+" : "") + "<small>total</small>";
   else if (t.hi) $("#rTickets").innerHTML = "desde USD " + fmt(t.lo) + "<small>total</small>";
@@ -169,6 +227,10 @@ function render() {
   L.push("Fechas: " + fmtD($("#fIda").value) + " al " + fmtD($("#fVuelta").value) + (n ? " (" + n + " noches)" : ""));
   L.push("Viajeros: " + pax.adultos + " adultos, " + pax.ninos + " niños (3-9), " + pax.bebes + " bebés");
   if (w.list.length) { L.push("Plan:"); w.list.forEach(([p, d]) => L.push("  - " + p.name + ": " + d + (p.perNight ? " noches" : " día" + (d > 1 ? "s" : "")))); }
+  if (state.compras) L.push("Días de compras: " + state.compras);
+  const evSel = activeEvents().filter(e => e.extra && state.eventos.has(e.id));
+  if (evSel.length) L.push("Eventos: " + evSel.map(e => e.name).join(", "));
+  if (w.days && n < need) L.push("Noches recomendadas por la app: " + need);
   if (state.destinos.has("cruise")) L.push("Crucero: " + $("#crNoches").value + " noches desde " + $("#crPuerto").value);
   L.push("Alojamiento: " + $("#hotel").value);
   L.push("Entrada: " + $("#ticketTipo").selectedOptions[0].textContent);
@@ -181,6 +243,7 @@ function render() {
   $("#btnWsp").href = "https://wa.me/" + num + "?text=" + encodeURIComponent(msg);
   save();
 }
+$("#btnAjustar").onclick = () => { $("#fVuelta").value = $("#btnAjustar").dataset.to; render(); };
 $("#btnWsp").addEventListener("click", e => {
   if (!$("#nombre").value.trim()) { e.preventDefault(); $("#toast").textContent = "Completá tu nombre en el paso 5 antes de enviar."; $("#nombre").focus(); }
   else $("#toast").textContent = "";
