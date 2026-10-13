@@ -203,7 +203,7 @@ function render() {
     pd.appendChild(row);
   });
   $("#cruiseBox").hidden = !state.destinos.has("cruise");
-  const wantsPlan = state.extras.has("Plan de comidas");
+  const wantsPlan = state.extras.has("Plan de comidas (Solo en Disney)");
   $("#planBox").hidden = !wantsPlan;
   if (wantsPlan) {
     const pl = D.planesComida.find(x => x.id === state.plan) || D.planesComida[0], nn = nights(), est = $("#planEst");
@@ -269,14 +269,14 @@ function render() {
   if (state.destinos.has("cruise")) L.push("Crucero: " + $("#crNoches").value + " noches desde " + $("#crPuerto").value);
   L.push("Alojamiento: " + $("#hotel").value);
   L.push("Entrada: " + $("#ticketTipo").selectedOptions[0].textContent);
-  if (state.extras.size) L.push("Extras: " + [...state.extras].map(x => x === "Plan de comidas" ? "Plan de comidas (" + (D.planesComida.find(p => p.id === state.plan) || D.planesComida[0]).name + ")" : x).join(", "));
+  if (state.extras.size) L.push("Extras: " + [...state.extras].map(x => x === "Plan de comidas (Solo en Disney)" ? "Plan de comidas (" + (D.planesComida.find(p => p.id === state.plan) || D.planesComida[0]).name + ")" : x).join(", "));
   if ($("#coment").value.trim()) L.push("Comentarios: " + $("#coment").value.trim());
   if (t.hi) L.push("", "Referencia de entradas vista en la app: USD " + fmt(t.lo) + "-" + fmt(t.hi));
   const msg = L.join("\n");
   $("#msg").textContent = msg;
   const num = String(A.whatsapp || "").replace(/\D/g, "");
   $("#btnWsp").href = "https://wa.me/" + num + "?text=" + encodeURIComponent(msg);
-  const plSel = state.extras.has("Plan de comidas") ? (D.planesComida.find(p => p.id === state.plan) || D.planesComida[0]).name : "";
+  const plSel = state.extras.has("Plan de comidas (Solo en Disney)") ? (D.planesComida.find(p => p.id === state.plan) || D.planesComida[0]).name : "";
   window.__pedido = {
     nombre: $("#nombre").value.trim().slice(0, 120), wsp: $("#wsp").value.trim().slice(0, 40),
     destinos: [...state.destinos].map(k => D.resorts[k].name),
