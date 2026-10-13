@@ -25,7 +25,7 @@ window.AGENCIA = {
 window.AGENTE = {
   nombre: "Juan Ignacio",
   // Foto: subí la imagen a la carpeta (ej: foto-agente.jpg) y poné el nombre acá. Vacío = iniciales.
-  foto: "",
+  foto: "foto-agente.jpg",
   frase: "Me formé en las academias de Disney y Universal. Te ayudo a planificar y reservar tu viaje.",
   bio: [
     "¡Hola! Soy Juan Ignacio, un apasionado de los viajes y los parques de diversiones, con un amor especial por Disney.",
