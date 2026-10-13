@@ -4,7 +4,7 @@
 // ===============================================
 window.AGENCIA = {
   // Nombre que aparece arriba de la app
-  nombre: "Tu Agencia de Viajes",
+  nombre: "Juani te lleva",
 
   // WhatsApp donde llegan los pedidos.
   // Formato internacional, solo números, sin + ni espacios.
