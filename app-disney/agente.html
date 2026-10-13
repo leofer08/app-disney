@@ -9,8 +9,8 @@
 <link rel="icon" href="icons/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
-<link rel="stylesheet" href="styles.css?v=7">
-<link rel="stylesheet" href="agente.css?v=7">
+<link rel="stylesheet" href="styles.css?v=9">
+<link rel="stylesheet" href="agente.css?v=9">
 </head>
 <body class="agente">
 
@@ -28,12 +28,38 @@
   </form>
 </section>
 
+<!-- ============ CAMBIO DE CLAVE ============ -->
+<section id="vClave" class="login-wrap" hidden>
+  <form class="login" id="fClave" autocomplete="on">
+    <span class="eyebrow">Primer ingreso</span>
+    <h1>Elegí tu contraseña</h1>
+    <p class="note">Por seguridad, cambiá la contraseña temporal antes de entrar al panel.</p>
+    <input type="email" id="cEmail" autocomplete="username" hidden>
+    <label class="f" for="cNueva">Nueva contraseña<input id="cNueva" type="password" autocomplete="new-password" minlength="8" required></label>
+    <label class="f" for="cRepite">Repetila<input id="cRepite" type="password" autocomplete="new-password" minlength="8" required></label>
+    <p class="note">Mínimo 8 caracteres.</p>
+    <button class="btn primary" type="submit" id="cBtn">Guardar y entrar</button>
+    <button class="linkbtn" type="button" id="cSalir">Salir</button>
+    <p class="toast" id="cMsg" role="status"></p>
+  </form>
+</section>
+
+<!-- ============ SIN ACCESO ============ -->
+<section id="vSinAcceso" class="login-wrap" hidden>
+  <div class="login">
+    <h1>Sin acceso al panel</h1>
+    <p class="note" id="saMsg">Tu usuario existe pero no está habilitado como agente. Pedile al administrador que te dé de alta.</p>
+    <button class="btn ghost" type="button" id="saSalir">Salir</button>
+  </div>
+</section>
+
 <!-- ============ PANEL ============ -->
 <div id="vPanel" hidden>
   <header class="ptop">
     <div class="brandline"><span class="eyebrow" id="agNombre">Agencia</span><h1>Pedidos</h1></div>
     <div class="row">
       <span class="note" id="who"></span>
+      <button class="btn ghost sm" id="btnAgentes" type="button" hidden>Agentes</button>
       <button class="btn ghost sm" id="btnNuevo" type="button">+ Pedido manual</button>
       <button class="btn ghost sm" id="btnSalir" type="button">Salir</button>
     </div>
@@ -80,7 +106,25 @@
   </form>
 </div>
 
-<script src="config.js?v=7"></script>
-<script type="module" src="agente.js?v=7"></script>
+<!-- ============ AGENTES (solo admin) ============ -->
+<div class="modal" id="mAgentes" hidden>
+  <div class="modal-card wide-card">
+    <div class="row" style="justify-content:space-between"><h2>Agentes</h2><button class="btn ghost sm" type="button" id="agCerrar">Cerrar</button></div>
+    <div id="agLista" class="stack" style="gap:8px"></div>
+    <form id="fAgente" class="stack" style="gap:10px;border-top:1px solid var(--line);padding-top:12px">
+      <h3>Dar de alta un agente</h3>
+      <p class="note">1) Creá el usuario en Firebase → Authentication → Agregar usuario, con una contraseña temporal. 2) Cargalo acá. La primera vez que entre, el panel le va a pedir cambiar la contraseña.</p>
+      <label class="f" for="aEmail">Email<input id="aEmail" type="email" required></label>
+      <label class="f" for="aNombre">Nombre<input id="aNombre" maxlength="80"></label>
+      <label class="f" for="aRol">Rol
+        <select id="aRol"><option value="agente">Agente: ve y gestiona pedidos</option><option value="admin">Admin: además gestiona agentes</option></select></label>
+      <button class="btn primary" type="submit">Dar de alta</button>
+      <p class="toast" id="aMsg" role="status"></p>
+    </form>
+  </div>
+</div>
+
+<script src="config.js?v=9"></script>
+<script type="module" src="agente.js?v=9"></script>
 </body>
 </html>

@@ -10,7 +10,7 @@ window.AGENCIA = {
   // Formato internacional, solo números, sin + ni espacios.
   // Ejemplo Argentina celular: 5491155550000  (54 + 9 + código de área sin 0 + número sin 15)
   // Si queda vacío, el botón abre WhatsApp para que el cliente elija el contacto.
-  whatsapp: "",
+  whatsapp: "5491133870843",
 
   // Email de contacto (se muestra como texto, opcional)
   email: "",

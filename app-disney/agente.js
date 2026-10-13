@@ -1,7 +1,7 @@
 // Panel del agente: login, lista de pedidos en vivo, estados, seguimiento y notas.
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, collection, query, orderBy, limit, onSnapshot, doc, updateDoc, addDoc, serverTimestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, updatePassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, query, orderBy, limit, onSnapshot, doc, updateDoc, addDoc, setDoc, getDoc, serverTimestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const app = initializeApp(window.FIREBASE);
 const auth = getAuth(app);
@@ -21,7 +21,9 @@ const ESTADOS = [
 const stName = id => (ESTADOS.find(e => e.id === id) || ESTADOS[0]).name;
 const stVar = id => "var(--st-" + (ESTADOS.some(e => e.id === id) ? id : "nuevo") + ")";
 
-let pedidos = [], sel = null, filtro = "todos", unsub = null;
+let pedidos = [], sel = null, filtro = "todos", unsub = null, unsubAg = null, yo = null, agentes = [];
+// Super admin fijo (también está en las reglas de Firestore)
+const SUPER = "leofer8@gmail.com";
 
 /* ---------- Utilidades ---------- */
 const fmt = n => Number(n || 0).toLocaleString("es-AR");
@@ -64,16 +66,99 @@ $("#lReset").onclick = async () => {
 };
 $("#btnSalir").onclick = () => signOut(auth);
 
-onAuthStateChanged(auth, user => {
-  $("#vLogin").hidden = !!user; $("#vPanel").hidden = !user;
-  if (unsub) { unsub(); unsub = null; }
-  if (!user) { pedidos = []; sel = null; return; }
-  $("#who").textContent = user.email;
+function vista(v) { ["vLogin", "vClave", "vSinAcceso", "vPanel"].forEach(id => $("#" + id).hidden = id !== v); }
+function detener() { if (unsub) { unsub(); unsub = null; } if (unsubAg) { unsubAg(); unsubAg = null; } }
+
+onAuthStateChanged(auth, async user => {
+  detener();
+  if (!user) { pedidos = []; sel = null; yo = null; vista("vLogin"); return; }
+  const email = (user.email || "").toLowerCase();
+  const esSuper = email === SUPER;
+  let perfil = null;
+  try { const d = await getDoc(doc(db, "agentes", email)); perfil = d.exists() ? d.data() : null; } catch (e) { perfil = null; }
+  if (esSuper && !perfil) {
+    perfil = { email, nombre: "Leo", rol: "admin", activo: true, cambiarClave: false };
+    try { await setDoc(doc(db, "agentes", email), { ...perfil, creado: serverTimestamp() }); } catch (e) {}
+  }
+  if (!esSuper && (!perfil || perfil.activo === false)) { vista("vSinAcceso"); return; }
+  yo = { email, esSuper, admin: esSuper || perfil.rol === "admin", ...perfil };
+  if (!esSuper && perfil.cambiarClave) { $("#cEmail").value = email; vista("vClave"); $("#cNueva").focus(); return; }
+  abrirPanel();
+});
+
+function abrirPanel() {
+  vista("vPanel");
+  $("#who").textContent = yo.email + (yo.esSuper ? " · super admin" : yo.admin ? " · admin" : "");
+  $("#btnAgentes").hidden = !yo.admin;
+  updateDoc(doc(db, "agentes", yo.email), { ultimoIngreso: serverTimestamp() }).catch(() => {});
   const q = query(collection(db, "pedidos"), orderBy("creado", "desc"), limit(500));
   unsub = onSnapshot(q, snap => {
     pedidos = snap.docs.map(d => ({ id: d.id, ...d.data({ serverTimestamps: "estimate" }) }));
     renderAll();
   }, err => { $("#lista").innerHTML = ""; $("#lista").appendChild(el("div", "empty", "No se pudieron leer los pedidos: " + err.message)); });
+}
+
+/* ---------- Cambio de clave obligatorio ---------- */
+$("#fClave").addEventListener("submit", async e => {
+  e.preventDefault();
+  const n = $("#cNueva").value, r = $("#cRepite").value;
+  if (n.length < 8) { $("#cMsg").textContent = "La contraseña tiene que tener al menos 8 caracteres."; return; }
+  if (n !== r) { $("#cMsg").textContent = "Las dos contraseñas no coinciden."; return; }
+  $("#cBtn").disabled = true; $("#cMsg").textContent = "Guardando…";
+  try {
+    await updatePassword(auth.currentUser, n);
+    await updateDoc(doc(db, "agentes", yo.email), { cambiarClave: false });
+    yo.cambiarClave = false; $("#fClave").reset(); $("#cMsg").textContent = "";
+    abrirPanel();
+  } catch (err) {
+    $("#cMsg").textContent = err.code === "auth/requires-recent-login" ? "Por seguridad, salí y volvé a entrar con la contraseña temporal, y cambiala enseguida." : err.code === "auth/weak-password" ? "Esa contraseña es muy débil. Probá con otra más larga." : "No se pudo cambiar la contraseña: " + err.message;
+  }
+  $("#cBtn").disabled = false;
+});
+$("#cSalir").onclick = () => signOut(auth);
+$("#saSalir").onclick = () => signOut(auth);
+
+/* ---------- Agentes (solo admin) ---------- */
+$("#btnAgentes").onclick = () => {
+  $("#mAgentes").hidden = false;
+  if (!unsubAg) unsubAg = onSnapshot(collection(db, "agentes"), snap => { agentes = snap.docs.map(d => ({ id: d.id, ...d.data() })); renderAgentes(); },
+    err => { $("#agLista").innerHTML = ""; $("#agLista").appendChild(el("p", "note", "No se pudieron leer los agentes: " + err.message)); });
+};
+$("#agCerrar").onclick = () => { $("#mAgentes").hidden = true; };
+function renderAgentes() {
+  const box = $("#agLista"); box.innerHTML = "";
+  agentes.sort((a, b) => (a.id === SUPER ? -1 : b.id === SUPER ? 1 : a.id.localeCompare(b.id))).forEach(a => {
+    const r = el("div", "agrow" + (a.activo === false ? " off" : ""));
+    const t = el("div", "agtx");
+    t.append(el("b", null, (a.nombre || a.id.split("@")[0]) + (a.id === SUPER ? " · super admin" : "")), el("small", null, a.id));
+    const tags = el("div", "row");
+    tags.appendChild(el("span", "tag", a.rol === "admin" ? "Admin" : "Agente"));
+    if (a.activo === false) tags.appendChild(el("span", "tag warn", "Desactivado"));
+    if (a.cambiarClave) tags.appendChild(el("span", "tag due", "Debe cambiar la clave"));
+    if (a.ultimoIngreso && a.ultimoIngreso.toDate) tags.appendChild(el("span", "tag", "Último ingreso " + hace(a.ultimoIngreso.toDate())));
+    t.appendChild(tags);
+    r.appendChild(t);
+    if (a.id !== SUPER && a.id !== yo.email) {
+      const acc = el("div", "row");
+      const b1 = el("button", "btn ghost sm", a.activo === false ? "Reactivar" : "Desactivar"); b1.type = "button";
+      b1.onclick = () => updateDoc(doc(db, "agentes", a.id), { activo: a.activo === false });
+      const b2 = el("button", "btn ghost sm", "Pedir cambio de clave"); b2.type = "button"; b2.disabled = !!a.cambiarClave;
+      b2.onclick = () => updateDoc(doc(db, "agentes", a.id), { cambiarClave: true });
+      const b3 = el("button", "btn ghost sm", a.rol === "admin" ? "Pasar a agente" : "Hacer admin"); b3.type = "button";
+      b3.onclick = () => updateDoc(doc(db, "agentes", a.id), { rol: a.rol === "admin" ? "agente" : "admin" });
+      acc.append(b1, b2, b3); r.appendChild(acc);
+    }
+    box.appendChild(r);
+  });
+}
+$("#fAgente").addEventListener("submit", async e => {
+  e.preventDefault();
+  const email = $("#aEmail").value.trim().toLowerCase();
+  if (!email) return;
+  try {
+    await setDoc(doc(db, "agentes", email), { email, nombre: $("#aNombre").value.trim(), rol: $("#aRol").value, activo: true, cambiarClave: true, creado: serverTimestamp(), creadoPor: yo.email });
+    $("#fAgente").reset(); $("#aMsg").textContent = "Listo: " + email + " ya puede entrar. Al primer ingreso le pide cambiar la contraseña.";
+  } catch (err) { $("#aMsg").textContent = "No se pudo dar de alta: " + err.message; }
 });
 
 /* ---------- Filtros ---------- */

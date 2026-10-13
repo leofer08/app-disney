@@ -63,3 +63,9 @@ body.agente{min-height:100vh}
 .modal-card{width:100%;max-width:460px;background:var(--surface);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:10px;max-height:92vh;overflow:auto}
 .modal-card label.f{flex:none}
 .saved{color:var(--ok);font-size:.82rem;font-weight:600;min-height:1.1em}
+.wide-card{max-width:620px}
+.agrow{display:flex;flex-direction:column;gap:8px;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.agrow.off{opacity:.6}
+.agtx{display:flex;flex-direction:column;gap:4px;min-width:0}
+.agtx small{color:var(--muted);word-break:break-all}
+.agrow .btn.sm{padding:6px 10px;font-size:.8rem}
