@@ -408,7 +408,7 @@ function setAvatar(el) {
   else el.textContent = AG.nombre.split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase();
 }
 function renderYo() {
-  if (!AG) { $("#agCard").hidden = true; document.querySelector('nav [data-tab="yo"]').hidden = true; return; }
+  if (!AG) { $("#agWrap").hidden = true; document.querySelector('nav [data-tab="yo"]').hidden = true; return; }
   setAvatar($("#agAvatar")); setAvatar($("#yoAvatar"));
   $("#agCardNombre").textContent = AG.nombre; $("#agCardFrase").textContent = AG.frase;
   $("#yoNombre").textContent = AG.nombre;
@@ -435,6 +435,7 @@ function renderYo() {
   if (num) { $("#yoWsp").href = "https://wa.me/" + num + "?text=" + encodeURIComponent("Hola " + AG.nombre.split(" ")[0] + "! Quiero consultarte por un viaje."); $("#yoWsp").hidden = false; }
   const redes = [];
   const ig = String(AG.instagram || "").replace(/^@/, "").trim();
+  if (ig) { $("#agIg").href = "https://instagram.com/" + encodeURIComponent(ig); $("#agIg").hidden = false; }
   if (ig) { $("#yoIg").href = "https://instagram.com/" + encodeURIComponent(ig); $("#yoIg").textContent = "Seguime en Instagram · @" + ig; $("#yoIg").hidden = false; }
   if (A.email) redes.push("Email: " + A.email);
   $("#yoRedes").textContent = redes.join(" · ");

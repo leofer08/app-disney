@@ -151,6 +151,10 @@ nav.tabs button{font-size:.74rem;text-align:center;line-height:1.15}
 .agcard .agtxt small{color:var(--muted);font-size:.82rem}
 .agcard .agmas{color:var(--accent);font-weight:700;font-size:.82rem;white-space:nowrap}
 @media (max-width:380px){.agcard .agmas{display:none}}
+.agwrap{position:relative}
+.igbtn{position:absolute;top:8px;right:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:var(--bg);border:1px solid var(--line);border-radius:50%;color:var(--accent);text-decoration:none}
+.igbtn:hover{border-color:var(--accent)}
+.igbtn svg{width:20px;height:20px}
 .yohead{display:flex;gap:16px;align-items:center;padding-block:18px 4px;flex-wrap:wrap}
 .bio p{font-size:1rem;line-height:1.6;max-width:62ch}
 .bio p:first-child{font-family:var(--f-display);font-size:1.2rem;font-weight:700;line-height:1.3}
