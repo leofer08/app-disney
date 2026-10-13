@@ -35,7 +35,14 @@ window.AGENTE = {
     "Durante años compartí recomendaciones con quienes estaban por viajar. Hoy, esa misma pasión se convirtió en una forma de acompañarte desde los primeros planes."
   ],
   cierre: "¿Empezamos a imaginar tu próximo viaje?",
-  credenciales: ["Formado en la academia de Disney", "Formado en la academia de Universal"],
+  // Certificaciones: imagen en la carpeta certificados/. Las que no tengan imagen se muestran solo como texto.
+  credenciales: [
+    { titulo: "College of Disney Knowledge 2026", emisor: "Disney Destinations", fecha: "Mayo 2026", img: "certificados/college-disney-knowledge-2026.jpg", destacada: true },
+    { titulo: "Walt Disney World Resort", emisor: "Disney Destinations", fecha: "Mayo 2026", img: "certificados/walt-disney-world.jpg" },
+    { titulo: "Disneyland Resort", emisor: "Disney Destinations", fecha: "Mayo 2026", img: "certificados/disneyland-resort.jpg" },
+    { titulo: "Disney Cruise Line", emisor: "Disney Destinations", fecha: "Mayo 2026", img: "certificados/disney-cruise-line.jpg" },
+    { titulo: "Aulani Resort (Hawái)", emisor: "Disney Destinations", fecha: "Abril 2026", img: "certificados/aulani.jpg" }
+  ],
   servicios: ["Parques Disney", "Parques Universal", "Cruceros Disney"],
   // Redes (dejá vacío lo que no uses). Instagram sin @.
   instagram: "",

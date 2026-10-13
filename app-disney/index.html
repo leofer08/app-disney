@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
-<link rel="stylesheet" href="styles.css?v=9">
+<link rel="stylesheet" href="styles.css?v=10">
 </head>
 <body>
 <div class="app">
@@ -31,7 +31,7 @@
 
     <button class="agcard" id="agCard" type="button" aria-label="Conocé a tu agente">
       <span class="avatar" id="agAvatar" aria-hidden="true"></span>
-      <span class="agtxt"><span class="eyebrow">Tu agente</span><b id="agCardNombre"></b><small id="agCardFrase"></small></span>
+      <span class="agtxt"><span class="eyebrow">Tu agente</span><b id="agCardNombre"></b><small id="agCardFrase"></small><span class="badge-cert" id="agBadge" hidden></span></span>
       <span class="agmas">Conocé más →</span>
     </button>
 
@@ -183,8 +183,9 @@
     </section>
     <section class="panel bio" id="yoBio"></section>
     <section class="panel" id="yoCredBox">
-      <div class="panel-head"><h2>Formación</h2></div>
-      <ul class="tips" id="yoCred"></ul>
+      <div class="panel-head"><h2>Formación</h2><span class="pill" id="yoCredN"></span></div>
+      <p class="note">Certificaciones oficiales de los programas de capacitación para agentes. Tocá una para verla completa.</p>
+      <div class="certs" id="yoCred"></div>
     </section>
     <section class="panel" id="yoTestBox" hidden>
       <div class="panel-head"><h2>Lo que dicen quienes viajaron</h2></div>
@@ -203,6 +204,12 @@
   <footer class="disc">App de una agencia de viajes. No es una app oficial de Disney ni de Universal. Precios de entradas: rangos públicos en USD antes de impuestos, sujetos a cambio; la cotización final la confirma el agente.</footer>
 </div>
 
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lb-close" id="lbClose" type="button" aria-label="Cerrar">×</button>
+  <img id="lbImg" alt="">
+  <p id="lbCap"></p>
+</div>
+
 <div class="sheet" id="iosSheet" hidden>
   <h2>Instalá la app en tu iPhone</h2>
   <p>Tocá el botón <b>Compartir</b> de Safari (el cuadrado con la flecha) y elegí <b>Agregar a inicio</b>.</p>
@@ -218,9 +225,9 @@
   </div>
 </nav>
 
-<script src="config.js?v=9"></script>
-<script src="data.js?v=9"></script>
-<script src="app.js?v=9"></script>
-<script type="module" src="pedidos.js?v=9"></script>
+<script src="config.js?v=10"></script>
+<script src="data.js?v=10"></script>
+<script src="app.js?v=10"></script>
+<script type="module" src="pedidos.js?v=10"></script>
 </body>
 </html>

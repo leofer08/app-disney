@@ -158,3 +158,16 @@ nav.tabs button{font-size:.74rem;text-align:center;line-height:1.15}
 .testi blockquote{margin:0;font-size:.96rem}
 .testi figcaption{color:var(--muted);font-size:.82rem;margin-top:4px}
 .yocta h2{color:inherit}
+.certs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cert{appearance:none;text-align:left;display:flex;flex-direction:column;gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:8px;cursor:pointer;color:var(--ink);font-family:var(--f-body);min-width:0}
+.cert img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:6px;background:#fff;display:block}
+.cert b{font-size:.84rem;line-height:1.25}
+.cert small{color:var(--muted);font-size:.74rem}
+.cert.star{grid-column:1/-1}
+.cert.star img{aspect-ratio:auto;object-fit:contain}
+.cert.star b{font-size:.95rem}
+.badge-cert{align-self:flex-start;margin-top:4px;font:700 .7rem var(--f-body);color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,transparent);padding:2px 8px;border-radius:999px}
+.lightbox{position:fixed;inset:0;z-index:1200;background:rgba(8,12,24,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding-inline:16px}
+.lightbox img{max-width:100%;max-height:78vh;border-radius:8px;background:#fff}
+.lightbox p{color:#fff;font-weight:600;text-align:center}
+.lb-close{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:16px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.15);color:#fff;font-size:1.8rem;line-height:1;cursor:pointer}

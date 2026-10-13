@@ -414,8 +414,19 @@ function renderYo() {
   $("#yoNombre").textContent = AG.nombre;
   const sv = $("#yoServ"); sv.innerHTML = ""; (AG.servicios || []).forEach(x => { const c = document.createElement("span"); c.className = "pill"; c.textContent = x; sv.appendChild(c); });
   const bio = $("#yoBio"); bio.innerHTML = ""; (AG.bio || []).forEach(t => { const p = document.createElement("p"); p.textContent = t; bio.appendChild(p); });
-  const cr = $("#yoCred"); cr.innerHTML = ""; (AG.credenciales || []).forEach(t => { const li = document.createElement("li"); li.textContent = t; cr.appendChild(li); });
-  $("#yoCredBox").hidden = !(AG.credenciales || []).length;
+  const creds = (AG.credenciales || []).map(c => typeof c === "string" ? { titulo: c } : c);
+  const cr = $("#yoCred"); cr.innerHTML = "";
+  creds.forEach(c => {
+    const b = document.createElement(c.img ? "button" : "div"); b.className = "cert" + (c.destacada ? " star" : "");
+    if (c.img) { b.type = "button"; const im = document.createElement("img"); im.src = c.img; im.alt = "Certificado " + c.titulo; im.loading = "lazy"; b.appendChild(im); b.onclick = () => abrirCert(c); }
+    const t = document.createElement("b"); t.textContent = c.titulo;
+    const m = document.createElement("small"); m.textContent = [c.emisor, c.fecha].filter(Boolean).join(" · ");
+    b.append(t, m); cr.appendChild(b);
+  });
+  $("#yoCredBox").hidden = !creds.length;
+  $("#yoCredN").textContent = creds.length ? creds.length + (creds.length > 1 ? " certificaciones" : " certificación") : "";
+  const top = creds.find(c => c.destacada);
+  if (top) { $("#agBadge").textContent = "✓ " + top.titulo; $("#agBadge").hidden = false; }
   const ts = AG.testimonios || []; $("#yoTestBox").hidden = !ts.length;
   const tb = $("#yoTest"); tb.innerHTML = "";
   ts.forEach(t => { const d = document.createElement("figure"); d.className = "testi"; const q = document.createElement("blockquote"); q.textContent = t.texto; const f = document.createElement("figcaption"); f.textContent = t.autor + (t.viaje ? " · " + t.viaje : ""); d.append(q, f); tb.appendChild(d); });
@@ -427,6 +438,11 @@ function renderYo() {
   if (A.email) redes.push("Email: " + A.email);
   $("#yoRedes").textContent = redes.join(" · ");
 }
+function abrirCert(c) { $("#lbImg").src = c.img; $("#lbImg").alt = "Certificado " + c.titulo; $("#lbCap").textContent = c.titulo + (c.fecha ? " · " + c.fecha : ""); $("#lightbox").hidden = false; $("#lbClose").focus(); }
+const cerrarCert = () => { $("#lightbox").hidden = true; };
+$("#lbClose").onclick = cerrarCert;
+$("#lightbox").addEventListener("click", e => { if (e.target.id === "lightbox") cerrarCert(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#lightbox").hidden) cerrarCert(); });
 $("#agCard").onclick = () => showTab("yo");
 $("#yoArmar").onclick = () => showTab("viaje");
 
