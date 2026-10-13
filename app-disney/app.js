@@ -434,7 +434,8 @@ function renderYo() {
   const num = String(A.whatsapp || "").replace(/\D/g, "");
   if (num) { $("#yoWsp").href = "https://wa.me/" + num + "?text=" + encodeURIComponent("Hola " + AG.nombre.split(" ")[0] + "! Quiero consultarte por un viaje."); $("#yoWsp").hidden = false; }
   const redes = [];
-  if (AG.instagram) redes.push("Instagram: @" + AG.instagram);
+  const ig = String(AG.instagram || "").replace(/^@/, "").trim();
+  if (ig) { $("#yoIg").href = "https://instagram.com/" + encodeURIComponent(ig); $("#yoIg").textContent = "Seguime en Instagram · @" + ig; $("#yoIg").hidden = false; }
   if (A.email) redes.push("Email: " + A.email);
   $("#yoRedes").textContent = redes.join(" · ");
 }

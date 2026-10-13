@@ -45,7 +45,7 @@ window.AGENTE = {
   ],
   servicios: ["Parques Disney", "Parques Universal", "Cruceros Disney"],
   // Redes (dejá vacío lo que no uses). Instagram sin @.
-  instagram: "",
+  instagram: "juanitelleva",
   // Testimonios reales de clientes, con su permiso. Ej: { texto: "...", autor: "Familia García", viaje: "Orlando 2025" }
   testimonios: []
 };
