@@ -399,10 +399,41 @@ function renderGuia() {
   $("#ckProg").textContent = hechos + " de " + D.checklist.length + " listos";
 }
 
+/* ---------- Quién soy ---------- */
+const AG = window.AGENTE || null;
+function setAvatar(el) {
+  if (!AG) return;
+  el.textContent = "";
+  if (AG.foto) { const i = document.createElement("img"); i.src = AG.foto; i.alt = ""; el.appendChild(i); }
+  else el.textContent = AG.nombre.split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase();
+}
+function renderYo() {
+  if (!AG) { $("#agCard").hidden = true; document.querySelector('nav [data-tab="yo"]').hidden = true; return; }
+  setAvatar($("#agAvatar")); setAvatar($("#yoAvatar"));
+  $("#agCardNombre").textContent = AG.nombre; $("#agCardFrase").textContent = AG.frase;
+  $("#yoNombre").textContent = AG.nombre;
+  const sv = $("#yoServ"); sv.innerHTML = ""; (AG.servicios || []).forEach(x => { const c = document.createElement("span"); c.className = "pill"; c.textContent = x; sv.appendChild(c); });
+  const bio = $("#yoBio"); bio.innerHTML = ""; (AG.bio || []).forEach(t => { const p = document.createElement("p"); p.textContent = t; bio.appendChild(p); });
+  const cr = $("#yoCred"); cr.innerHTML = ""; (AG.credenciales || []).forEach(t => { const li = document.createElement("li"); li.textContent = t; cr.appendChild(li); });
+  $("#yoCredBox").hidden = !(AG.credenciales || []).length;
+  const ts = AG.testimonios || []; $("#yoTestBox").hidden = !ts.length;
+  const tb = $("#yoTest"); tb.innerHTML = "";
+  ts.forEach(t => { const d = document.createElement("figure"); d.className = "testi"; const q = document.createElement("blockquote"); q.textContent = t.texto; const f = document.createElement("figcaption"); f.textContent = t.autor + (t.viaje ? " · " + t.viaje : ""); d.append(q, f); tb.appendChild(d); });
+  $("#yoCierre").textContent = AG.cierre || "";
+  const num = String(A.whatsapp || "").replace(/\D/g, "");
+  if (num) { $("#yoWsp").href = "https://wa.me/" + num + "?text=" + encodeURIComponent("Hola " + AG.nombre.split(" ")[0] + "! Quiero consultarte por un viaje."); $("#yoWsp").hidden = false; }
+  const redes = [];
+  if (AG.instagram) redes.push("Instagram: @" + AG.instagram);
+  if (A.email) redes.push("Email: " + A.email);
+  $("#yoRedes").textContent = redes.join(" · ");
+}
+$("#agCard").onclick = () => showTab("yo");
+$("#yoArmar").onclick = () => showTab("viaje");
+
 /* ---------- Tabs ---------- */
 function showTab(tab) {
   document.querySelectorAll("nav.tabs button").forEach(x => x.setAttribute("aria-selected", x.dataset.tab === tab));
-  ["viaje", "parques", "guia"].forEach(t => $("#tab-" + t).hidden = t !== tab);
+  ["viaje", "parques", "guia", "yo"].forEach(t => $("#tab-" + t).hidden = t !== tab);
   window.scrollTo({ top: 0 });
   if (tab === "guia") renderGuia();
   if (location.hash !== "#" + tab) history.replaceState(null, "", "#" + tab);
@@ -421,7 +452,7 @@ $("#btnInstall").onclick = async () => {
 $("#iosClose").onclick = () => $("#iosSheet").hidden = true;
 if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
 
-render(); renderParks(); renderGuia();
-const fromHash = () => { const h = location.hash.slice(1); if (["viaje", "parques", "guia"].includes(h)) showTab(h); };
+render(); renderParks(); renderGuia(); renderYo();
+const fromHash = () => { const h = location.hash.slice(1); if (["viaje", "parques", "guia", "yo"].includes(h)) showTab(h); };
 fromHash(); window.addEventListener("hashchange", fromHash);
 })();

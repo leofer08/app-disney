@@ -107,7 +107,7 @@ ul.tips{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px;fo
 .leaflet-container{font-family:var(--f-body)}
 
 nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px));display:flex;justify-content:center;z-index:1000}
-nav.tabs .in{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%;max-width:560px}
+nav.tabs .in{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:100%;max-width:560px}
 nav.tabs button{appearance:none;border:0;background:transparent;color:var(--muted);font:700 .8rem var(--f-body);padding:8px 4px;border-radius:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
 nav.tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 nav.tabs button[aria-selected="true"]{color:var(--accent);background:var(--soft)}
@@ -141,3 +141,20 @@ section.panel > label.f{flex:none}
 .ckitem .tag.warn{background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent)}
 .ckitem.done b{text-decoration:line-through;color:var(--muted)}
 .linkout{color:var(--sky);font-weight:700;font-size:.88rem;text-decoration:none}
+nav.tabs button{font-size:.74rem;text-align:center;line-height:1.15}
+.avatar{width:48px;height:48px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:inline-flex;align-items:center;justify-content:center;font:800 1.05rem var(--f-display);flex-shrink:0;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.avatar.xl{width:96px;height:96px;font-size:2rem}
+.agcard{appearance:none;width:100%;text-align:left;display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px;cursor:pointer;color:var(--ink);font-family:var(--f-body)}
+.agcard .agtxt{display:flex;flex-direction:column;min-width:0;flex:1}
+.agcard .agtxt b{font-size:1rem}
+.agcard .agtxt small{color:var(--muted);font-size:.82rem}
+.agcard .agmas{color:var(--accent);font-weight:700;font-size:.82rem;white-space:nowrap}
+@media (max-width:380px){.agcard .agmas{display:none}}
+.yohead{display:flex;gap:16px;align-items:center;padding-block:18px 4px;flex-wrap:wrap}
+.bio p{font-size:1rem;line-height:1.6;max-width:62ch}
+.bio p:first-child{font-family:var(--f-display);font-size:1.2rem;font-weight:700;line-height:1.3}
+.testi{margin:0;border-left:3px solid var(--accent);padding-left:12px}
+.testi blockquote{margin:0;font-size:.96rem}
+.testi figcaption{color:var(--muted);font-size:.82rem;margin-top:4px}
+.yocta h2{color:inherit}

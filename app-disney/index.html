@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
-<link rel="stylesheet" href="styles.css?v=8">
+<link rel="stylesheet" href="styles.css?v=9">
 </head>
 <body>
 <div class="app">
@@ -28,6 +28,12 @@
       <h1>Armá tu viaje a Disney y Universal y te lo cotizamos</h1>
       <p class="hero-sub">Elegí destino, fechas y parques. Te mostramos cuánto vas a caminar y una referencia de entradas; el precio final lo arma tu agente.</p>
     </div>
+
+    <button class="agcard" id="agCard" type="button" aria-label="Conocé a tu agente">
+      <span class="avatar" id="agAvatar" aria-hidden="true"></span>
+      <span class="agtxt"><span class="eyebrow">Tu agente</span><b id="agCardNombre"></b><small id="agCardFrase"></small></span>
+      <span class="agmas">Conocé más →</span>
+    </button>
 
 
     <section class="panel">
@@ -165,6 +171,35 @@
     </section>
   </main>
 
+  <!-- ============ QUIÉN SOY ============ -->
+  <main id="tab-yo" class="stack" hidden>
+    <section class="yohead">
+      <span class="avatar xl" id="yoAvatar" aria-hidden="true"></span>
+      <div class="stack" style="gap:4px">
+        <span class="eyebrow">Quién soy</span>
+        <h1 id="yoNombre"></h1>
+        <div class="chips" id="yoServ"></div>
+      </div>
+    </section>
+    <section class="panel bio" id="yoBio"></section>
+    <section class="panel" id="yoCredBox">
+      <div class="panel-head"><h2>Formación</h2></div>
+      <ul class="tips" id="yoCred"></ul>
+    </section>
+    <section class="panel" id="yoTestBox" hidden>
+      <div class="panel-head"><h2>Lo que dicen quienes viajaron</h2></div>
+      <div class="stack" id="yoTest" style="gap:10px"></div>
+    </section>
+    <section class="ticket yocta">
+      <h2 id="yoCierre"></h2>
+      <div class="row">
+        <button class="btn primary wide" id="yoArmar" type="button">Armá tu viaje</button>
+        <a class="btn ghost wide" id="yoWsp" target="_blank" rel="noopener" href="#" hidden>Escribime por WhatsApp</a>
+      </div>
+      <p class="note" id="yoRedes"></p>
+    </section>
+  </main>
+
   <footer class="disc">App de una agencia de viajes. No es una app oficial de Disney ni de Universal. Precios de entradas: rangos públicos en USD antes de impuestos, sujetos a cambio; la cotización final la confirma el agente.</footer>
 </div>
 
@@ -179,12 +214,13 @@
     <button role="tab" aria-selected="true" data-tab="viaje"><svg viewBox="0 0 24 24"><path d="M3 9h18v4a2 2 0 0 0 0 4v2H3v-2a2 2 0 0 0 0-4z"/><path d="M14 9v10" stroke-dasharray="2 2"/></svg>Armá tu viaje</button>
     <button role="tab" aria-selected="false" data-tab="parques"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Parques</button>
     <button role="tab" aria-selected="false" data-tab="guia"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>Antes de viajar</button>
+    <button role="tab" aria-selected="false" data-tab="yo"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Quién soy</button>
   </div>
 </nav>
 
-<script src="config.js?v=8"></script>
-<script src="data.js?v=8"></script>
-<script src="app.js?v=8"></script>
-<script type="module" src="pedidos.js?v=8"></script>
+<script src="config.js?v=9"></script>
+<script src="data.js?v=9"></script>
+<script src="app.js?v=9"></script>
+<script type="module" src="pedidos.js?v=9"></script>
 </body>
 </html>

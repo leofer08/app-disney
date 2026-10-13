@@ -20,6 +20,30 @@ window.AGENCIA = {
 };
 
 // ===============================================
+//  QUIÉN SOY (pestaña de presentación del agente)
+// ===============================================
+window.AGENTE = {
+  nombre: "Juan Ignacio",
+  // Foto: subí la imagen a la carpeta (ej: foto-agente.jpg) y poné el nombre acá. Vacío = iniciales.
+  foto: "",
+  frase: "Me formé en las academias de Disney y Universal. Te ayudo a planificar y reservar tu viaje.",
+  bio: [
+    "¡Hola! Soy Juan Ignacio, un apasionado de los viajes y los parques de diversiones, con un amor especial por Disney.",
+    "Viajé muchas veces, en pareja, con amigos y en familia. Cada experiencia me enseñó que hay distintas maneras de disfrutar un mismo destino y que cada viaje tiene su propio ritmo.",
+    "Me formé en las academias de Disney y Universal, y hoy te ayudo a planificar y reservar tus viajes a sus parques y tus cruceros Disney. Además, sigo leyendo e investigando sobre su historia, novedades y esos pequeños detalles que pueden hacer especial cada visita.",
+    "Lo que más disfruto es conocerte: escuchar qué te entusiasma, cómo te gusta viajar y qué esperás de esa experiencia. Así podemos armar un viaje pensado para vos.",
+    "Durante años compartí recomendaciones con quienes estaban por viajar. Hoy, esa misma pasión se convirtió en una forma de acompañarte desde los primeros planes."
+  ],
+  cierre: "¿Empezamos a imaginar tu próximo viaje?",
+  credenciales: ["Formado en la academia de Disney", "Formado en la academia de Universal"],
+  servicios: ["Parques Disney", "Parques Universal", "Cruceros Disney"],
+  // Redes (dejá vacío lo que no uses). Instagram sin @.
+  instagram: "",
+  // Testimonios reales de clientes, con su permiso. Ej: { texto: "...", autor: "Familia García", viaje: "Orlando 2025" }
+  testimonios: []
+};
+
+// ===============================================
 //  FIREBASE (base de datos de pedidos)
 //  Estos datos son públicos por diseño: la seguridad la dan las reglas de Firestore.
 // ===============================================
