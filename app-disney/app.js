@@ -248,7 +248,7 @@ function render() {
       ajustar.hidden = true;
     }
   }
-  $("#rTicketsLbl").textContent = "Entradas · referencia precios públicos (" + D.actualizado + ")";
+  $("#rTicketsLbl").textContent = "Entradas · valor aproximado (" + D.actualizado + ")";
   if (t.hi && t.hi > t.lo) $("#rTickets").innerHTML = "USD " + fmt(t.lo) + "–" + fmt(t.hi) + (t.open ? "+" : "") + "<small>total</small>";
   else if (t.hi) $("#rTickets").innerHTML = "desde USD " + fmt(t.lo) + "<small>total</small>";
   else $("#rTickets").textContent = "A cotizar";

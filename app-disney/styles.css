@@ -56,6 +56,10 @@ input,select,textarea{font:500 1rem var(--f-body);color:var(--ink);background:va
 .ticket .perf{border-top:2px dashed color-mix(in srgb,var(--surface) 35%,transparent);margin-inline:-18px}
 .ticket .eyebrow{color:color-mix(in srgb,var(--surface) 65%,transparent)}
 .ticket .note{color:inherit;opacity:.8}
+.aviso{display:flex;gap:10px;align-items:flex-start;background:color-mix(in srgb,var(--gold) 16%,transparent);border:1px solid color-mix(in srgb,var(--gold) 60%,transparent);border-radius:12px;padding:10px 12px;font-size:.85rem;line-height:1.45}
+.aviso svg{flex:none;color:var(--gold);margin-top:1px}
+.aviso b{color:var(--gold)}
+@media (prefers-color-scheme: dark){.aviso svg,.aviso b{color:color-mix(in srgb,var(--gold) 55%,var(--surface))}}
 .kv{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .kv div{min-width:0}
 .kv .v{font-family:var(--f-mono);font-size:1rem}
