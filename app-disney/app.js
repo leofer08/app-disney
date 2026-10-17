@@ -2,6 +2,7 @@
 "use strict";
 const A = window.AGENCIA, D = window.DATA;
 const $ = s => document.querySelector(s);
+const track = k => { try { (window.__ev = window.__ev || []).push(k); } catch (e) {} };
 const fmt = (n, d = 0) => n.toLocaleString("es-AR", { minimumFractionDigits: d, maximumFractionDigits: d });
 const store = {
   get(k, def) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch (e) { return def; } },
@@ -297,7 +298,7 @@ $("#btnWsp").addEventListener("click", async e => {
   e.preventDefault();
   if (!$("#nombre").value.trim()) { $("#toast").textContent = "Completá tu nombre en el paso 6 antes de enviar."; $("#nombre").focus(); return; }
   if (enviando) return;
-  enviando = true; $("#toast").textContent = "Registrando tu pedido…";
+  enviando = true; track("wsp"); $("#toast").textContent = "Registrando tu pedido…";
   const base = $("#msg").textContent;
   let last = null; try { last = JSON.parse(sessionStorage.getItem("ultimoPedido") || "null"); } catch (err) {}
   let codigo = last && last.msg === base ? last.codigo : Math.random().toString(36).slice(2, 8).toUpperCase();
@@ -317,6 +318,7 @@ $("#btnWsp").addEventListener("click", async e => {
   if (!window.open(url, "_blank")) location.href = url;
 });
 $("#btnCopy").onclick = async () => {
+  track("copiar");
   const m = $("#msg").textContent;
   try { await navigator.clipboard.writeText(m); $("#toast").textContent = "Pedido copiado. Pegalo en WhatsApp o mail."; }
   catch (e) { $("#msgBox").open = true; const r = document.createRange(); r.selectNodeContents($("#msg")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); $("#toast").textContent = "Texto seleccionado: copialo con el menú del teléfono."; }
@@ -454,6 +456,7 @@ function showTab(tab) {
   ["viaje", "parques", "guia", "yo"].forEach(t => $("#tab-" + t).hidden = t !== tab);
   window.scrollTo({ top: 0 });
   if (tab === "guia") renderGuia();
+  if (tab !== "viaje") track("t_" + tab);
   if (location.hash !== "#" + tab) history.replaceState(null, "", "#" + tab);
 }
 document.querySelectorAll("nav.tabs button").forEach(b => b.onclick = () => showTab(b.dataset.tab));

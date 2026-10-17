@@ -69,3 +69,20 @@ body.agente{min-height:100vh}
 .agtx{display:flex;flex-direction:column;gap:4px;min-width:0}
 .agtx small{color:var(--muted);word-break:break-all}
 .agrow .btn.sm{padding:6px 10px;font-size:.8rem}
+.stats-card{max-width:760px}
+.st-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:640px){.st-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.st-kpis .kpi{cursor:default}
+.st-kpis .kpi b{font-size:1.6rem}
+.stchart{display:flex;align-items:flex-end;gap:2px;height:120px;border-bottom:1px solid var(--line);padding-top:6px}
+.stchart i{flex:1;min-width:2px;background:var(--sky);border-radius:3px 3px 0 0;position:relative}
+.stchart i.hoy{background:var(--accent)}
+.stchart i:hover{opacity:.8}
+.stlbl{display:flex;justify-content:space-between;font-size:.74rem;color:var(--muted)}
+.stgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:640px){.stgrid{grid-template-columns:1fr}}
+.stbars{display:flex;flex-direction:column;gap:6px}
+.stbar{display:grid;grid-template-columns:96px minmax(0,1fr) 44px;gap:8px;align-items:center;font-size:.84rem}
+.stbar .tr{height:10px;background:var(--soft);border-radius:999px;overflow:hidden}
+.stbar .tr i{display:block;height:100%;background:var(--sky);border-radius:999px}
+.stbar .n{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}

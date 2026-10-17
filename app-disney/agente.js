@@ -1,7 +1,7 @@
 // Panel del agente: login, lista de pedidos en vivo, estados, seguimiento y notas.
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, updatePassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, collection, query, orderBy, limit, onSnapshot, doc, updateDoc, addDoc, setDoc, getDoc, serverTimestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, query, orderBy, limit, onSnapshot, doc, updateDoc, addDoc, setDoc, getDoc, getDocs, where, documentId, serverTimestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const app = initializeApp(window.FIREBASE);
 const auth = getAuth(app);
@@ -88,6 +88,7 @@ onAuthStateChanged(auth, async user => {
 
 function abrirPanel() {
   vista("vPanel");
+  try { localStorage.setItem("noContar", "1"); } catch (e) {}
   $("#who").textContent = yo.email + (yo.esSuper ? " · super admin" : yo.admin ? " · admin" : "");
   $("#btnAgentes").hidden = !yo.admin;
   updateDoc(doc(db, "agentes", yo.email), { ultimoIngreso: serverTimestamp() }).catch(() => {});
@@ -160,6 +161,50 @@ $("#fAgente").addEventListener("submit", async e => {
     $("#fAgente").reset(); $("#aMsg").textContent = "Listo: " + email + " ya puede entrar. Al primer ingreso le pide cambiar la contraseña.";
   } catch (err) { $("#aMsg").textContent = "No se pudo dar de alta: " + err.message; }
 });
+
+/* ---------- Estadísticas de visitas ---------- */
+let stDias = 30;
+const diaAR = d => d.toLocaleDateString("sv-SE", { timeZone: "America/Argentina/Buenos_Aires" });
+function ultimosDias(n) { const out = []; const d = new Date(); for (let i = n - 1; i >= 0; i--) { const x = new Date(d); x.setDate(d.getDate() - i); out.push(diaAR(x)); } return out; }
+const pct = (a, b) => b ? Math.round(a / b * 100) + "%" : "–";
+function barras(box, filas) {
+  box.innerHTML = "";
+  const max = Math.max(1, ...filas.map(f => f[1]));
+  const tot = filas.reduce((s, f) => s + f[1], 0);
+  filas.forEach(([nom, n]) => {
+    const r = el("div", "stbar"); const tr = el("div", "tr"); const i = el("i"); i.style.width = (n / max * 100) + "%"; tr.appendChild(i);
+    r.append(el("span", null, nom), tr, el("span", "n", tot ? n + "" : "0")); r.title = nom + ": " + n + (tot ? " (" + pct(n, tot) + ")" : ""); box.appendChild(r);
+  });
+}
+async function cargarStats() {
+  document.querySelectorAll("#stRango .chip").forEach(b => b.setAttribute("aria-pressed", +b.dataset.d === stDias));
+  const dias = ultimosDias(stDias);
+  let datos = {};
+  try {
+    const snap = await getDocs(query(collection(db, "stats"), where(documentId(), ">=", dias[0])));
+    snap.forEach(d => { datos[d.id] = d.data(); });
+    $("#sNota").textContent = "Se cuenta una visita por sesión. No se guardan datos personales. Las visitas de agentes que entraron al panel desde ese navegador no se cuentan.";
+  } catch (err) { $("#sNota").textContent = "No se pudieron leer las visitas: " + err.message; }
+  const suma = k => dias.reduce((s, d) => s + ((datos[d] || {})[k] || 0), 0);
+  const vis = suma("visitas"), uni = suma("unicos"), wsp = suma("wsp");
+  const ped = pedidos.filter(p => { const c = tsDate(p.creado); return c && diaAR(c) >= dias[0]; });
+  const pedApp = ped.filter(p => p.origen === "app").length;
+  $("#sVis").textContent = fmt(vis); $("#sVisSub").textContent = "promedio " + fmt(Math.round(vis / stDias * 10) / 10) + " por día";
+  $("#sUni").textContent = fmt(uni);
+  $("#sWsp").textContent = fmt(wsp); $("#sWspSub").textContent = pct(wsp, vis) + " de las visitas";
+  $("#sPed").textContent = fmt(pedApp); $("#sPedSub").textContent = ped.length > pedApp ? "+ " + (ped.length - pedApp) + " cargados a mano" : "desde la app";
+  const ch = $("#sChart"); ch.innerHTML = "";
+  const max = Math.max(1, ...dias.map(d => (datos[d] || {}).visitas || 0));
+  const hoy = diaAR(new Date());
+  dias.forEach(d => { const n = (datos[d] || {}).visitas || 0; const i = el("i", d === hoy ? "hoy" : null); i.style.height = Math.max(n ? 4 : 1, n / max * 100) + "%"; i.title = fDia(d) + ": " + n + " visita" + (n === 1 ? "" : "s"); ch.appendChild(i); });
+  $("#sDesde").textContent = fDia(dias[0]); $("#sHasta").textContent = "hoy";
+  barras($("#sFuentes"), [["Google", suma("f_google")], ["Instagram", suma("f_instagram")], ["Facebook", suma("f_facebook")], ["WhatsApp", suma("f_whatsapp")], ["Directo / sin dato", suma("f_directo")], ["Otros sitios", suma("f_otro")]]);
+  barras($("#sDisp"), [["Celular", suma("d_movil")], ["Computadora", suma("d_compu")]]);
+  barras($("#sTabs"), [["Parques", suma("t_parques")], ["Antes de viajar", suma("t_guia")], ["Quién soy", suma("t_yo")], ["Copiaron pedido", suma("copiar")]]);
+}
+$("#btnStats").onclick = () => { $("#mStats").hidden = false; cargarStats(); };
+$("#stCerrar").onclick = () => { $("#mStats").hidden = true; };
+document.querySelectorAll("#stRango .chip").forEach(b => b.onclick = () => { stDias = +b.dataset.d; cargarStats(); });
 
 /* ---------- Filtros ---------- */
 const FILTROS = [{ id: "todos", name: "Todos" }, { id: "abiertos", name: "Abiertos" }, ...ESTADOS];

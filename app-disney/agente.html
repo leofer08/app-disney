@@ -9,8 +9,8 @@
 <link rel="icon" href="icons/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
-<link rel="stylesheet" href="styles.css?v=9">
-<link rel="stylesheet" href="agente.css?v=9">
+<link rel="stylesheet" href="styles.css?v=10">
+<link rel="stylesheet" href="agente.css?v=10">
 </head>
 <body class="agente">
 
@@ -59,6 +59,7 @@
     <div class="brandline"><span class="eyebrow" id="agNombre">Agencia</span><h1>Pedidos</h1></div>
     <div class="row">
       <span class="note" id="who"></span>
+      <button class="btn ghost sm" id="btnStats" type="button">Visitas</button>
       <button class="btn ghost sm" id="btnAgentes" type="button" hidden>Agentes</button>
       <button class="btn ghost sm" id="btnNuevo" type="button">+ Pedido manual</button>
       <button class="btn ghost sm" id="btnSalir" type="button">Salir</button>
@@ -124,7 +125,32 @@
   </div>
 </div>
 
-<script src="config.js?v=9"></script>
-<script type="module" src="agente.js?v=9"></script>
+<!-- ============ ESTADÍSTICAS (solo agentes) ============ -->
+<div class="modal" id="mStats" hidden>
+  <div class="modal-card stats-card">
+    <div class="row" style="justify-content:space-between"><h2>Visitas a la app</h2><button class="btn ghost sm" type="button" id="stCerrar">Cerrar</button></div>
+    <div class="chips" id="stRango" role="group" aria-label="Período">
+      <button class="chip" type="button" data-d="7">7 días</button>
+      <button class="chip" type="button" data-d="30">30 días</button>
+      <button class="chip" type="button" data-d="90">90 días</button>
+    </div>
+    <div class="kpis st-kpis">
+      <div class="kpi"><span class="k">Visitas</span><b id="sVis">–</b><small id="sVisSub">&nbsp;</small></div>
+      <div class="kpi"><span class="k">Personas</span><b id="sUni">–</b><small>distintas por día</small></div>
+      <div class="kpi"><span class="k">Tocaron “Armemos tu viaje”</span><b id="sWsp">–</b><small id="sWspSub">&nbsp;</small></div>
+      <div class="kpi"><span class="k">Pedidos recibidos</span><b id="sPed">–</b><small id="sPedSub">&nbsp;</small></div>
+    </div>
+    <div class="dsec"><h3>Visitas por día</h3><div class="stchart" id="sChart" role="img" aria-label="Visitas por día"></div><div class="stlbl"><span id="sDesde"></span><span id="sHasta"></span></div></div>
+    <div class="stgrid">
+      <div class="dsec"><h3>De dónde llegan</h3><div id="sFuentes" class="stbars"></div></div>
+      <div class="dsec"><h3>Desde qué equipo</h3><div id="sDisp" class="stbars"></div><h3 style="margin-top:8px">Qué más miran</h3><div id="sTabs" class="stbars"></div></div>
+    </div>
+    <p class="note" id="sNota">Se cuenta una visita por sesión. No se guardan datos personales. Las visitas de agentes que entraron al panel desde ese navegador no se cuentan.</p>
+    <p class="note">Tip: para saber qué publicación trae gente, compartí el link así: <span class="mono">juanitelleva.com.ar/?src=instagram</span> (o facebook, whatsapp, google).</p>
+  </div>
+</div>
+
+<script src="config.js?v=10"></script>
+<script type="module" src="agente.js?v=10"></script>
 </body>
 </html>
