@@ -279,6 +279,9 @@ footer .disc{flex-basis:100%;font-size:.8rem;opacity:.8}
 
 <a class="fab" data-wa="Hola! Vi tu página y quiero consultarte por un viaje." href="#" aria-label="WhatsApp">💬</a>
 
+<!-- Estadísticas de visitas: usa el mismo contador del cotizador (panel de agentes → Visitas). -->
+<script src="cotizador/config.js"></script>
+<script type="module" src="cotizador/pedidos.js"></script>
 <script>
 /* ====== CONFIGURACIÓN: editá estos datos ====== */
 const WHATSAPP = "5491133870843"; // código de país + 9 + área sin 0 + número sin 15, sin + ni espacios
@@ -303,6 +306,11 @@ const marquee = document.getElementById("marquee");
 
 // Conserva los parámetros de campaña (?utm_source=...) al pasar al cotizador, para que las estadísticas sigan contando de dónde viene la gente.
 if (location.search) document.querySelectorAll('a[href^="cotizador/"]').forEach(a => { const [p, h] = a.getAttribute("href").split("#"); a.href = p + location.search + (h ? "#" + h : ""); });
+
+// Clic en WhatsApp: se suma al contador del panel (una vez por sesión).
+document.querySelectorAll("[data-wa]").forEach(a => a.addEventListener("click", () => {
+  try { if (window.trackEvento) window.trackEvento("wsp"); else (window.__ev = window.__ev || []).push("wsp"); } catch (e) {}
+}));
 </script>
 </body>
 </html>
