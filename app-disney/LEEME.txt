@@ -1,0 +1,26 @@
+JUANI TE LLEVA - cómo subir esto
+
+ESTRUCTURA FINAL DEL SITIO
+  /index.html                  <- landing (nueva, está en este zip)
+  /fotos/01.webp ... 09.webp   <- fotos de las tiras (están en este zip)
+  /cotizador/index.html        <- nuevo (en este zip)
+  /cotizador/tema.css          <- nuevo (en este zip)
+  /cotizador/config.js         <- nuevo (en este zip)
+  /cotizador/sw.js             <- nuevo (en este zip)
+  /cotizador/manifest.webmanifest <- nuevo (en este zip)
+  /cotizador/styles.css, app.js, data.js, pedidos.js  <- los tuyos, SIN cambios
+  /cotizador/icons/, certificados/, foto-agente.jpg   <- los tuyos, SIN cambios
+
+PASOS
+1) Mové todos los archivos actuales del cotizador a una carpeta "cotizador".
+2) Pisá index.html, config.js, sw.js y manifest.webmanifest con los de este zip, y sumá tema.css.
+3) Poné index.html (la landing) en la raíz.
+4) Subí todo (Firebase / Cloudflare).
+
+PARA COMPLETAR EN LA LANDING (index.html)
+
+- Tiras de fotos: ya están cargadas 9 fotos en la carpeta fotos/. Para sumar o cambiar, editá el arreglo FOTOS al final de index.html.
+
+NOTAS
+- El cotizador queda solo en modo claro para que combine con la landing.
+- Verificá las fechas de las certificaciones (config.js y landing) contra los certificados reales.

@@ -1,0 +1,46 @@
+/* ==========================================================
+   Tema "Juani te lleva": mismo estilo que la landing.
+   Se carga DESPUÉS de styles.css y pisa colores y tipografías.
+   Solo modo claro (igual que la landing).
+   ========================================================== */
+:root{
+  --bg:#ffffff; --surface:#ffffff; --ink:#0b1b3f; --muted:#5b6785; --line:#e3e8f5;
+  --accent:#ff0100; --accent-ink:#ffffff; --gold:#ffc72c; --sky:#022eb8; --soft:#fff4d1; --ok:#1f8a5b;
+  --f-display:"Playfair Display",Georgia,serif;
+  --f-body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-mono:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color-scheme:light;
+}
+/* sin modo oscuro: se ve igual que la landing */
+@media (prefers-color-scheme: dark){:root{
+  --bg:#ffffff; --surface:#ffffff; --ink:#0b1b3f; --muted:#5b6785; --line:#e3e8f5;
+  --accent:#ff0100; --accent-ink:#ffffff; --gold:#ffc72c; --sky:#022eb8; --soft:#fff4d1; --ok:#1f8a5b;
+  color-scheme:light}}
+
+/* Títulos: Playfair Display, igual que la landing */
+h1{font-weight:400;line-height:1.2;letter-spacing:-.01em;animation:fadeUp .9s .15s ease both}
+h2{font-weight:700;letter-spacing:-.01em}
+h1,h2,h3,.big,.avatar{font-variant-numeric:lining-nums}
+.big{font-weight:800}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){h1{animation:none}}
+
+/* Números con el mismo tipo de letra del texto */
+.mono,.step,.stepper output,.kv .v,.stat .v,.track b,.axis div{font-variant-numeric:tabular-nums lining-nums}
+pre.msg{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+
+/* Botones y tarjetas redondeados como en la landing */
+.btn{border-radius:999px}
+.btn.primary:hover{background:#cc0100}
+section.panel,.agcard,.ticket,details.park{border-radius:18px}
+.eyebrow{color:var(--muted)}
+.ticket .eyebrow{color:color-mix(in srgb,#ffffff 70%,transparent)}
+
+/* Detalles en amarillo */
+.pill{background:var(--soft);color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.stepper button:hover{border-color:var(--gold);background:var(--soft)}
+
+/* Botón "Inicio" del encabezado */
+.top .home{font:700 .8rem var(--f-body);color:var(--ink);text-decoration:none;border:1.5px solid var(--line);padding:6px 12px;border-radius:999px;background:var(--surface)}
+.top .home:hover{border-color:var(--accent);color:var(--accent)}
