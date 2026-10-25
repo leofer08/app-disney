@@ -34,3 +34,7 @@
 
 /* campos del login con altura normal */
 .login label.f{flex:none}
+
+/* Tarjeta "Hoy" arriba de las estadísticas */
+.st-kpis .kpi.hoy{grid-column:1/-1;border-color:var(--accent);background:var(--soft)}
+.st-kpis .kpi.hoy b{font-size:2rem}

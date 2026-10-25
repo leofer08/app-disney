@@ -189,7 +189,10 @@ async function cargarStats() {
   const vis = suma("visitas"), uni = suma("unicos"), wsp = suma("wsp");
   const ped = pedidos.filter(p => { const c = tsDate(p.creado); return c && diaAR(c) >= dias[0]; });
   const pedApp = ped.filter(p => p.origen === "app").length;
-  $("#sVis").textContent = fmt(vis); $("#sVisSub").textContent = "promedio " + fmt(Math.round(vis / stDias * 10) / 10) + " por día";
+  const hoyD = datos[diaAR(new Date())] || {};
+  $("#sHoy").textContent = fmt(hoyD.visitas || 0) + (hoyD.visitas === 1 ? " visita" : " visitas");
+  $("#sHoySub").textContent = fmt(hoyD.unicos || 0) + " persona" + (hoyD.unicos === 1 ? "" : "s") + " · " + fmt(hoyD.wsp || 0) + " tocaron WhatsApp o “Armemos tu viaje”";
+  $("#sVis").textContent = fmt(vis); $("#sVisSub").textContent = "promedio " + fmt(Math.round(vis / stDias * 10) / 10) + " por día · incluye hoy";
   $("#sUni").textContent = fmt(uni);
   $("#sWsp").textContent = fmt(wsp); $("#sWspSub").textContent = pct(wsp, vis) + " de las visitas";
   $("#sPed").textContent = fmt(pedApp); $("#sPedSub").textContent = ped.length > pedApp ? "+ " + (ped.length - pedApp) + " cargados a mano" : "desde la app";
