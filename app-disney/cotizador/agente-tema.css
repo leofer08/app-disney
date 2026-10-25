@@ -1,0 +1,36 @@
+/* ==========================================================
+   Panel de agentes con el estilo "Juani te lleva".
+   Se carga DESPUÉS de styles.css, tema.css y agente.css.
+   Solo cambia el aspecto, no la lógica.
+   ========================================================== */
+:root,
+:root:not([data-x]){
+  --st-nuevo:#ff0100;      /* rojo */
+  --st-contactado:#022eb8; /* azul */
+  --st-cotizado:#ffc72c;   /* amarillo */
+  --st-vendido:#0b1b3f;    /* azul muy oscuro */
+  --st-perdido:#8a93a8;    /* gris */
+}
+@media (prefers-color-scheme: dark){:root{
+  --st-nuevo:#ff0100; --st-contactado:#022eb8; --st-cotizado:#ffc72c; --st-vendido:#0b1b3f; --st-perdido:#8a93a8}}
+
+/* texto de las etiquetas siempre legible (en modo claro y oscuro) */
+.st,.pipeline button[aria-pressed="true"]{color:#fff}
+@media (prefers-color-scheme: dark){.st,.pipeline button[aria-pressed="true"]{color:#fff}}
+/* el amarillo lleva texto azul oscuro */
+.st[style*="st-cotizado"],.pipeline button[aria-pressed="true"][style*="st-cotizado"]{color:#0b1b3f}
+
+/* tarjetas y botones redondeados como la landing */
+.login,.kpi,.item,.detalle{border-radius:18px}
+.item{border-radius:14px}
+.btn.sm,.pipeline button,.chip{border-radius:999px}
+.kpi b{font-weight:700}
+.kpi[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.item[aria-current="true"]{outline-color:var(--accent)}
+.linkbtn{color:var(--sky)}
+.brandline h1{font-weight:400}
+.login h1{font-size:1.6rem}
+.tag{background:var(--soft)}
+
+/* campos del login con altura normal */
+.login label.f{flex:none}

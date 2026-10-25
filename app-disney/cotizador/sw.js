@@ -1,5 +1,5 @@
 // Cambiá la versión cada vez que subas cambios, así los celulares bajan lo nuevo.
-const VERSION = "v19";
+const VERSION = "v20";
 const CACHE = "app-disney-" + VERSION;
 const SHELL = ["./", "index.html", "styles.css", "tema.css", "app.js", "data.js", "config.js", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png"];
 
