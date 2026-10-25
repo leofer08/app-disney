@@ -300,6 +300,9 @@ const marquee = document.getElementById("marquee");
   // se repite 6 veces para que la fila nunca quede vacía en pantallas anchas (par = el bucle empalma perfecto)
   marquee.insertAdjacentHTML("beforeend", `<div class="track${rev ? " rev" : ""}">${items.repeat(6)}</div>`);
 });
+
+// Conserva los parámetros de campaña (?utm_source=...) al pasar al cotizador, para que las estadísticas sigan contando de dónde viene la gente.
+if (location.search) document.querySelectorAll('a[href^="cotizador/"]').forEach(a => { const [p, h] = a.getAttribute("href").split("#"); a.href = p + location.search + (h ? "#" + h : ""); });
 </script>
 </body>
 </html>

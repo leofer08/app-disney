@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Panel de pedidos</title>
+<meta name="theme-color" content="#13234A">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="styles.css?v=10">
+<link rel="stylesheet" href="agente.css?v=10">
+</head>
+<body class="agente">
+
+<!-- ============ LOGIN ============ -->
+<section id="vLogin" class="login-wrap">
+  <form class="login" id="fLogin" autocomplete="on">
+    <span class="eyebrow" id="agNombreL">Agencia</span>
+    <h1>Panel de pedidos</h1>
+    <p class="note">Ingresá con el usuario de agente.</p>
+    <label class="f" for="lEmail">Email<input id="lEmail" type="email" autocomplete="username" required></label>
+    <label class="f" for="lPass">Contraseña<input id="lPass" type="password" autocomplete="current-password" required></label>
+    <button class="btn primary" type="submit" id="lBtn">Ingresar</button>
+    <button class="linkbtn" type="button" id="lReset">Olvidé mi contraseña</button>
+    <p class="toast" id="lMsg" role="status"></p>
+  </form>
+</section>
+
+<!-- ============ CAMBIO DE CLAVE ============ -->
+<section id="vClave" class="login-wrap" hidden>
+  <form class="login" id="fClave" autocomplete="on">
+    <span class="eyebrow">Primer ingreso</span>
+    <h1>Elegí tu contraseña</h1>
+    <p class="note">Por seguridad, cambiá la contraseña temporal antes de entrar al panel.</p>
+    <input type="email" id="cEmail" autocomplete="username" hidden>
+    <label class="f" for="cNueva">Nueva contraseña<input id="cNueva" type="password" autocomplete="new-password" minlength="8" required></label>
+    <label class="f" for="cRepite">Repetila<input id="cRepite" type="password" autocomplete="new-password" minlength="8" required></label>
+    <p class="note">Mínimo 8 caracteres.</p>
+    <button class="btn primary" type="submit" id="cBtn">Guardar y entrar</button>
+    <button class="linkbtn" type="button" id="cSalir">Salir</button>
+    <p class="toast" id="cMsg" role="status"></p>
+  </form>
+</section>
+
+<!-- ============ SIN ACCESO ============ -->
+<section id="vSinAcceso" class="login-wrap" hidden>
+  <div class="login">
+    <h1>Sin acceso al panel</h1>
+    <p class="note" id="saMsg">Tu usuario existe pero no está habilitado como agente. Pedile al administrador que te dé de alta.</p>
+    <button class="btn ghost" type="button" id="saSalir">Salir</button>
+  </div>
+</section>
+
+<!-- ============ PANEL ============ -->
+<div id="vPanel" hidden>
+  <header class="ptop">
+    <div class="brandline"><span class="eyebrow" id="agNombre">Agencia</span><h1>Pedidos</h1></div>
+    <div class="row">
+      <span class="note" id="who"></span>
+      <button class="btn ghost sm" id="btnStats" type="button">Visitas</button>
+      <button class="btn ghost sm" id="btnAgentes" type="button" hidden>Agentes</button>
+      <button class="btn ghost sm" id="btnNuevo" type="button">+ Pedido manual</button>
+      <button class="btn ghost sm" id="btnSalir" type="button">Salir</button>
+    </div>
+  </header>
+
+  <section class="kpis" aria-label="Resumen">
+    <button class="kpi" data-f="sincontacto" type="button"><span class="k">Sin contactar</span><b id="kNuevos">0</b><small id="kNuevosSub">—</small></button>
+    <button class="kpi" data-f="hoy" type="button"><span class="k">Seguimiento para hoy</span><b id="kHoy">0</b><small>incluye atrasados</small></button>
+    <button class="kpi" data-f="cotizado" type="button"><span class="k">Cotizados esperando</span><b id="kCot">0</b><small id="kCotSub">—</small></button>
+    <button class="kpi" data-f="vendido" type="button"><span class="k">Vendidos este mes</span><b id="kVen">0</b><small id="kVenSub">—</small></button>
+  </section>
+
+  <div class="pbody">
+    <section class="lista">
+      <div class="filtros">
+        <div class="chips" id="fEstados"></div>
+        <input id="fBuscar" type="search" placeholder="Buscar por nombre, teléfono, código o destino">
+      </div>
+      <div id="lista" class="items" aria-live="polite"></div>
+    </section>
+    <aside class="detalle" id="detalle" aria-live="polite">
+      <div class="vacio-det"><b>Elegí un pedido</b><p class="note">Acá vas a ver el detalle, cambiar el estado, anotar el seguimiento y escribirle al cliente.</p></div>
+    </aside>
+  </div>
+</div>
+
+<!-- ============ PEDIDO MANUAL ============ -->
+<div class="modal" id="mNuevo" hidden>
+  <form class="modal-card" id="fNuevo">
+    <h2>Pedido manual</h2>
+    <p class="note">Para consultas que llegan por WhatsApp, teléfono o mostrador.</p>
+    <label class="f" for="nNombre">Nombre<input id="nNombre" required maxlength="120"></label>
+    <label class="f" for="nWsp">WhatsApp<input id="nWsp" inputmode="tel" maxlength="40"></label>
+    <label class="f" for="nDest">Destino<input id="nDest" placeholder="Ej: Disney Orlando + Universal" maxlength="120"></label>
+    <div class="row">
+      <label class="f" for="nIda">Salida<input type="date" id="nIda"></label>
+      <label class="f" for="nVuelta">Regreso<input type="date" id="nVuelta"></label>
+    </div>
+    <label class="f" for="nNota">Detalle<textarea id="nNota" rows="3" maxlength="2000" placeholder="Ej: 2 adultos y 2 chicos, quieren hotel Disney"></textarea></label>
+    <div class="row">
+      <button class="btn primary wide" type="submit">Guardar pedido</button>
+      <button class="btn ghost wide" type="button" id="nCancel">Cancelar</button>
+    </div>
+  </form>
+</div>
+
+<!-- ============ AGENTES (solo admin) ============ -->
+<div class="modal" id="mAgentes" hidden>
+  <div class="modal-card wide-card">
+    <div class="row" style="justify-content:space-between"><h2>Agentes</h2><button class="btn ghost sm" type="button" id="agCerrar">Cerrar</button></div>
+    <div id="agLista" class="stack" style="gap:8px"></div>
+    <form id="fAgente" class="stack" style="gap:10px;border-top:1px solid var(--line);padding-top:12px">
+      <h3>Dar de alta un agente</h3>
+      <p class="note">1) Creá el usuario en Firebase → Authentication → Agregar usuario, con una contraseña temporal. 2) Cargalo acá. La primera vez que entre, el panel le va a pedir cambiar la contraseña.</p>
+      <label class="f" for="aEmail">Email<input id="aEmail" type="email" required></label>
+      <label class="f" for="aNombre">Nombre<input id="aNombre" maxlength="80"></label>
+      <label class="f" for="aRol">Rol
+        <select id="aRol"><option value="agente">Agente: ve y gestiona pedidos</option><option value="admin">Admin: además gestiona agentes</option></select></label>
+      <button class="btn primary" type="submit">Dar de alta</button>
+      <p class="toast" id="aMsg" role="status"></p>
+    </form>
+  </div>
+</div>
+
+<!-- ============ ESTADÍSTICAS (solo agentes) ============ -->
+<div class="modal" id="mStats" hidden>
+  <div class="modal-card stats-card">
+    <div class="row" style="justify-content:space-between"><h2>Visitas a la app</h2><button class="btn ghost sm" type="button" id="stCerrar">Cerrar</button></div>
+    <div class="chips" id="stRango" role="group" aria-label="Período">
+      <button class="chip" type="button" data-d="7">7 días</button>
+      <button class="chip" type="button" data-d="30">30 días</button>
+      <button class="chip" type="button" data-d="90">90 días</button>
+    </div>
+    <div class="kpis st-kpis">
+      <div class="kpi"><span class="k">Visitas</span><b id="sVis">–</b><small id="sVisSub">&nbsp;</small></div>
+      <div class="kpi"><span class="k">Personas</span><b id="sUni">–</b><small>distintas por día</small></div>
+      <div class="kpi"><span class="k">Tocaron “Armemos tu viaje”</span><b id="sWsp">–</b><small id="sWspSub">&nbsp;</small></div>
+      <div class="kpi"><span class="k">Pedidos recibidos</span><b id="sPed">–</b><small id="sPedSub">&nbsp;</small></div>
+    </div>
+    <div class="dsec"><h3>Visitas por día</h3><div class="stchart" id="sChart" role="img" aria-label="Visitas por día"></div><div class="stlbl"><span id="sDesde"></span><span id="sHasta"></span></div></div>
+    <div class="stgrid">
+      <div class="dsec"><h3>De dónde llegan</h3><div id="sFuentes" class="stbars"></div></div>
+      <div class="dsec"><h3>Desde qué equipo</h3><div id="sDisp" class="stbars"></div><h3 style="margin-top:8px">Qué más miran</h3><div id="sTabs" class="stbars"></div></div>
+    </div>
+    <p class="note" id="sNota">Se cuenta una visita por sesión. No se guardan datos personales. Las visitas de agentes que entraron al panel desde ese navegador no se cuentan.</p>
+    <p class="note">Tip: para saber qué publicación trae gente, compartí el link así: <span class="mono">juanitelleva.com.ar/?src=instagram</span> (o facebook, whatsapp, google).</p>
+  </div>
+</div>
+
+<script src="config.js?v=10"></script>
+<script type="module" src="agente.js?v=10"></script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Juani te lleva · Viajes a Disney y Universal</title>
+<title>Juani te lleva · Disney y Universal</title>
 <meta name="description" content="Armá tu viaje a Disney y Universal, mirá cuánto vas a caminar en cada parque y preparate antes de salir.">
 <meta name="theme-color" content="#0b1b3f">
 <link rel="manifest" href="manifest.webmanifest">
@@ -12,10 +12,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,800;1,400;1,500;1,700&display=swap">
-<link rel="stylesheet" href="styles.css?v=13">
-<link rel="stylesheet" href="tema.css?v=13">
+<link rel="stylesheet" href="styles.css?v=19">
+<link rel="stylesheet" href="tema.css?v=19">
 </head>
 <body>
 <div class="app">
@@ -32,11 +31,14 @@
       <p class="hero-sub">Elegí destino, fechas y parques. Te mostramos cuánto vas a caminar y una referencia de entradas; el precio final lo arma tu agente.</p>
     </div>
 
+    <div class="agwrap" id="agWrap">
     <button class="agcard" id="agCard" type="button" aria-label="Conocé a tu agente">
       <span class="avatar" id="agAvatar" aria-hidden="true"></span>
       <span class="agtxt"><span class="eyebrow">Tu agente</span><b id="agCardNombre"></b><small id="agCardFrase"></small><span class="badge-cert" id="agBadge" hidden></span></span>
       <span class="agmas">Conocé más →</span>
     </button>
+    <a class="igbtn" id="agIg" target="_blank" rel="noopener" href="#" hidden aria-label="Instagram de tu agente"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.6" fill="currentColor"/></svg></a>
+    </div>
 
 
     <section class="panel">
@@ -123,12 +125,13 @@
       <div id="rFlags" class="stack" style="gap:8px"></div>
       <div class="perf"></div>
       <div>
-        <div class="eyebrow" id="rTicketsLbl">Entradas · referencia precios públicos</div>
+        <div class="eyebrow" id="rTicketsLbl">Entradas · valor aproximado</div>
         <div class="big" id="rTickets"></div>
         <p class="note" id="rTicketsNota" style="margin-top:4px"></p>
       </div>
+      <div class="aviso" role="note"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><circle cx="12" cy="7.8" r=".6" fill="currentColor"/></svg><span><b>Valores aproximados.</b> Son una referencia de precios públicos y pueden cambiar. El precio final de tu viaje (vuelos, hotel, entradas y promos vigentes) lo calculás con tu agente.</span></div>
       <div class="row">
-        <a class="btn primary wide" id="btnWsp" target="_blank" rel="noopener" href="#">Enviar al agente por WhatsApp</a>
+        <a class="btn primary wide" id="btnWsp" target="_blank" rel="noopener" href="#">¡Armemos tu viaje!</a>
         <button class="btn ghost wide" id="btnCopy" type="button">Copiar pedido</button>
       </div>
       <div class="toast" id="toast" role="status"></div>
@@ -200,6 +203,7 @@
         <button class="btn primary wide" id="yoArmar" type="button">Armá tu viaje</button>
         <a class="btn ghost wide" id="yoWsp" target="_blank" rel="noopener" href="#" hidden>Escribime por WhatsApp</a>
       </div>
+      <a class="btn ghost wide" style="flex:none" id="yoIg" target="_blank" rel="noopener" href="#" hidden>Seguime en Instagram</a>
       <p class="note" id="yoRedes"></p>
     </section>
   </main>
@@ -228,9 +232,9 @@
   </div>
 </nav>
 
-<script src="config.js?v=13"></script>
-<script src="data.js?v=13"></script>
-<script src="app.js?v=13"></script>
-<script type="module" src="pedidos.js?v=13"></script>
+<script src="config.js?v=19"></script>
+<script src="data.js?v=19"></script>
+<script src="app.js?v=19"></script>
+<script type="module" src="pedidos.js?v=19"></script>
 </body>
 </html>
