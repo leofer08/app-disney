@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /cotizador/agente.html
+
+Sitemap: https://juanitelleva.com.ar/sitemap.xml
